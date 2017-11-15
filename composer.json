@@ -31,6 +31,7 @@
         }
     },
     "require":  {
-        "ttek/tk-installers": "~2.0"
+        "ttek/tk-installers": "~2.0",
+        "kartik-v/bootstrap-star-rating": "~2.0"
     }
 }

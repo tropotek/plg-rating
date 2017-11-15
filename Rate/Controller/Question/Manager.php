@@ -58,11 +58,7 @@ class Manager extends AdminManagerIface
         $this->table->setParam('renderer', \App\Factory::createTableRenderer($this->table));
 
         $this->table->addCell(new \Tk\Table\Cell\Checkbox('id'));
-        $this->table->addCell(new \Tk\Table\Cell\Text('text'))->addCss('key')->setUrl(clone $this->editUrl)->
-        setOnCellHtml(function($cell, $obj, $html) {
-            vd($obj);
-            return $html;
-        });
+        $this->table->addCell(new \Tk\Table\Cell\Text('text'))->addCss('key')->setUrl(clone $this->editUrl);
         $this->table->addCell(new \Tk\Table\Cell\Date('modified'));
 
         // Filters
