@@ -52,7 +52,7 @@ class PlacementReportEditHandler implements Subscriber
     {
         if ($this->form) {
             $this->form->addField(new \Tk\Form\Field\Checkbox('nonAnimal'))->setFieldset('Animal Types')->setNotes('Is this a non-animal placement?<br/><em>(Note: Checking this box will delete any existing animal data)</em>');
-            $this->form->addField(new \Rate\Form\Field\Animals('animals', $this->animalTypes, $this->controller->getPlacement()))->setFieldset('Animal Types')->setNotes('If this is an animal placement, add the type and number of animals seen.');
+            $this->form->addField(new \Rate\Form\Field\StarRating('animals', $this->animalTypes, $this->controller->getPlacement()))->setFieldset('Animal Types')->setNotes('If this is an animal placement, add the type and number of animals seen.');
 
             $formRenderer = $this->form->getRenderer();
             $template = $formRenderer->getTemplate();
