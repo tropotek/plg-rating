@@ -38,7 +38,7 @@ class StarRating extends \Tk\Form\Field\Input
     /**
      * @var null|array
      */
-    protected $starCaptions = null;
+    protected $starCaptions = array('Not Rated', 'Strongly Disagree', 'Disagree', 'Acceptable', 'Agree', 'Strongly Agree');
 
 
 
@@ -168,19 +168,22 @@ class StarRating extends \Tk\Form\Field\Input
      */
     public function show()
     {
-        $template = parent::show();
+        $template = $this->getTemplate();
 
-        $template->appendCssUrl(\Tk\Url::create('/vendor/kartik-v/bootstrap-star-rating/css/star-rating.min.css'));
+        $template->appendCssUrl(\Tk\Uri::create('/vendor/kartik-v/bootstrap-star-rating/css/star-rating.min.css'));
         $template->appendJsUrl(\Tk\Uri::create('/vendor/kartik-v/bootstrap-star-rating/js/star-rating.min.js'));
 
-        $template->setAttr('element', 'data-min', $this->getMin());
-        $template->setAttr('element', 'data-max', $this->getMax());
-        $template->setAttr('element', 'data-step', $this->getStep());
+        $this->setType('number');
+        // Options: http://plugins.krajee.com/star-rating#usage
+        $template->setAttr('element', 'min', $this->getMin());
+        $template->setAttr('element', 'max', $this->getMax());
+        $template->setAttr('element', 'step', $this->getStep());
         $template->setAttr('element', 'data-size', 'xs');
-        $template->setAttr('element', 'data-show-clear', 'false');   // ???
+        $template->setAttr('element', 'data-show-clear', 'true');   // show the clear button
+
         if (is_array($this->starCaptions) && count($this->starCaptions)) {
             $template->setAttr('element', 'data-show-caption', 'true');
-            $template->setAttr('element', 'data-star-captions', implode(',', $this->starCaptions));
+            $template->setAttr('element', 'data-star-captions', json_encode($this->starCaptions));
         } else {
             $template->setAttr('element', 'data-show-caption', 'false');
             $template->setAttr('element', 'data-star-captions', '');
@@ -188,21 +191,32 @@ class StarRating extends \Tk\Form\Field\Input
 
         $js = <<<JS
 jQuery(function($) {
-  $('.StarRating input').each(function () {
-    var _this = $(this);
-    // TODO: check the boolerans are types not strings..
-    $(this).rating({'min': _this.data('min'), 'max': _this.data('max'), 'step': _this.data('step'), 'size': _this.data('step'), 'showClear': false, 'showCaption': _this.data('show-caption'), starCaptions: _this.data('star-captions') });
-  });
   
-
+  $('.tk-star-rating input').rating();
+  
 });
 JS;
         $template->appendJs($js);
 
-
-
+        parent::show();
 
         return $template;
+    }
+
+    /**
+     * makeTemplate
+     *
+     * @return \Dom\Template
+     */
+    public function __makeTemplate()
+    {
+
+        $xhtml = <<<HTML
+<div class="tk-star-rating">
+  <input type="text" var="element" class="form-control" />
+</div>
+HTML;
+        return \Dom\Loader::load($xhtml);
     }
 
 }

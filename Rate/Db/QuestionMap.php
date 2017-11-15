@@ -57,7 +57,7 @@ class QuestionMap extends \App\Db\Mapper
      *
      * @param array $filter
      * @param Tool $tool
-     * @return ArrayObject
+     * @return ArrayObject|Question[]
      */
     public function findFiltered($filter = array(), $tool = null)
     {

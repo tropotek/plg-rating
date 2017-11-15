@@ -43,8 +43,8 @@ class SetupHandler implements Subscriber
             $dispatcher->addSubscriber(new \Rate\Listener\ProfileEditHandler());
 
             if (\App\Factory::getCourse()) {
-//                $dispatcher->addSubscriber(new \Rate\Listener\CompanyViewHandler());
-//                $dispatcher->addSubscriber(new \Rate\Listener\PlacementReportEditHandler());
+                $dispatcher->addSubscriber(new \Rate\Listener\CompanyViewHandler());
+                $dispatcher->addSubscriber(new \Rate\Listener\PlacementReportEditHandler());
             }
         }
 

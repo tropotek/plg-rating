@@ -34,7 +34,7 @@ class ValueMap extends \App\Db\Mapper
             $this->setTable('rating_value');
             $this->dbMap = new \Tk\DataMap\DataMap();
             $this->dbMap->addPropertyMap(new Db\Integer('id'), 'key');
-            $this->dbMap->addPropertyMap(new Db\Integer('quextionId', 'question_id'));
+            $this->dbMap->addPropertyMap(new Db\Integer('questionId', 'question_id'));
             $this->dbMap->addPropertyMap(new Db\Integer('placementId', 'placement_id'));
             $this->dbMap->addPropertyMap(new Db\Text('value'));
             $this->dbMap->addPropertyMap(new Db\Date('modified'));
@@ -60,11 +60,36 @@ class ValueMap extends \App\Db\Mapper
 
 
     /**
+     * Remove all values from the DB by placementId
+     *
+     * @param $placementId
+     * @return $this
+     */
+    public function removeAllByPlacementId($placementId)
+    {
+        $list = $this->findFiltered(array('placementId' => $placementId));
+        foreach ($list as $v) {
+            $v->delete();
+        }
+        return $this;
+    }
+
+    /**
+     * @param $questionId
+     * @param $placementId
+     * @return Value
+     */
+    public function findValue($questionId, $placementId)
+    {
+        return $this->findFiltered(array('questionId' => $questionId, 'placementId' => $placementId))->current();
+    }
+
+    /**
      * Find filtered records
      *
      * @param array $filter
      * @param Tool $tool
-     * @return ArrayObject
+     * @return ArrayObject|Value[]
      */
     public function findFiltered($filter = array(), $tool = null)
     {
@@ -96,22 +121,28 @@ class ValueMap extends \App\Db\Mapper
         }
 
         if (!empty($filter['questionId'])) {
-            $where .= sprintf('a.question_id = %s AND ', (int)$filter['typeId']);
+            $where .= sprintf('a.question_id = %s AND ', (int)$filter['questionId']);
         }
 
         if (!empty($filter['placementId'])) {
-            $where .= sprintf('a.placement_id = %s AND ', (int)$filter['questionId']);
+            $where .= sprintf('a.placement_id = %s AND ', (int)$filter['placementId']);
         }
 
-        if (!empty($filter['profileId']) || !empty($filter['courseId'])) {
+        if (!empty($filter['profileId'])) {
             $from .= sprintf(', %s b', $this->quoteTable('rating_question'));
             $where .= sprintf('a.question_id = b.id AND ');
-            if (!empty($filter['profileId'])) {
-                $where .= sprintf('b.profile_id = %s AND ', (int)$filter['profileId']);
-            }
+            $where .= sprintf('b.profile_id = %s AND ', (int)$filter['profileId']);
+        }
+
+
+        if (!empty($filter['courseId']) || !empty($filter['companyId'])) {
+            $from .= sprintf(', %s c', $this->quoteTable('placement'));
+            $where .= sprintf('a.placement_id = c.id AND ');
             if (!empty($filter['courseId'])) {
-                $from .= sprintf(', %s c', $this->quoteTable('placement'));
-                $where .= sprintf('a.placement_id = c.id AND c.course_id = %s AND ', (int)$filter['courseId']);
+                $where .= sprintf('c.course_id = %s AND ', (int)$filter['courseId']);
+            }
+            if (!empty($filter['companyId'])) {
+                $where .= sprintf('c.company_id = %s AND ', (int)$filter['companyId']);
             }
         }
 
@@ -143,9 +174,27 @@ class ValueMap extends \App\Db\Mapper
 
         $r = array($from, $where);
         return $r;
-
     }
 
 
+    /**
+     * @param array $filter
+     * @param Tool $tool
+     * @return float
+     */
+    public function findAverage($filter, $tool = null)
+    {
+        list($from, $where) = $this->processFilter($filter);
+        if (!$where) $where = '1';
+
+        $sql = sprintf('SELECT AVG(a.value) as avg
+FROM %s
+WHERE %s', $from, $where);
+        $stm = $this->getDb()->prepare($sql);
+        $stm->execute();
+        $r = $stm->fetch();
+        vd($r->avg);
+        return $r->avg;
+    }
 
 }

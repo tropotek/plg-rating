@@ -17,125 +17,53 @@ class CompanyViewHandler implements Subscriber
      */
     private $controller = null;
 
-    /**
-     * @var \Tk\Form
-     */
-    private $form = null;
 
     /**
-     * @var \Rate\Db\Question[]|\Tk\Db\Map\ArrayObject
+     * Check the user has access to this controller
+     *
+     * @param \Tk\Event\Event $event
      */
-    private $animalTypes = null;
-
-
-    /**
-     * @param \Tk\Event\FormEvent $event
-     */
-    public function onFormPreInit(\Tk\Event\FormEvent $event)
+    public function onControllerInit(\Tk\Event\Event $event)
     {
-        /** @var \App\Controller\Placement\ReportEdit $controller */
-        $controller = $event->getForm()->get('controller');
-        if ($controller instanceof \App\Controller\Placement\ReportEdit) {
-            if ($controller->getUser()->isStaff() && $controller->getCourse() && $controller->getPlacement()) {
-                $this->animalTypes = \Rate\Db\QuestionMap::create()->findFiltered(array('profileId' => $controller->getPlacement()->getCourse()->profileId));
-                if (!$this->animalTypes->count()) return;
-                $this->controller = $controller;
-                $this->form = $controller->getForm();
-            }
-        }
-    }
+        /** @var \Tk\Controller\Iface $controller */
+        $this->controller = $event->get('controller');
+        if ($this->controller instanceof \App\Controller\Company\View) {
+            if ($this->controller->getUser()->isStaff() || $this->controller->getUser()->isStudent()) {
+                $template = $this->controller->getTemplate();
+                $company = $this->controller->getCompany();
 
-    /**
-     * @param \Tk\Event\FormEvent $event
-     */
-    public function onFormInit(\Tk\Event\FormEvent $event)
-    {
-        if ($this->form) {
-            $this->form->addField(new \Tk\Form\Field\Checkbox('nonAnimal'))->setFieldset('Animal Types')->setNotes('Is this a non-animal placement?<br/><em>(Note: Checking this box will delete any existing animal data)</em>');
-            $this->form->addField(new \Rate\Form\Field\StarRating('animals', $this->animalTypes, $this->controller->getPlacement()))->setFieldset('Animal Types')->setNotes('If this is an animal placement, add the type and number of animals seen.');
+                // Company Profile Total
+                $value = (float)\Rate\Db\ValueMap::create()->findAverage(array('companyId' => $company->getId()));
+                $html = sprintf('<div class="rate-star-rating pull-right"><em>Star Rating</em><br/>%s</div>', \Rate\Ui\Stars::create($value, true));
+                $template->appendHtml('top-col-right', $html);
 
-            $formRenderer = $this->form->getRenderer();
-            $template = $formRenderer->getTemplate();
-            $js = <<<JS
-jQuery(function($) {
-  
-  var animalField = $('.tk-animals-field').animalField({}).data('animalField');
-  var f = animalField.getElement().closest('.AnimalTypes').find('input[type=checkbox]').on('change', function (e) {
-      animalField.enable(!$(this).prop('checked'));
-  });
-  animalField.enable(!f.prop('checked'));
-  
-});
-JS;
-            $template->appendJs($js, array('data-jsl-priority' => 10));
+                $template->appendCssUrl(\Tk\Uri::create(Plugin::getInstance()->getPluginPath().'/assets/rating.less'));
 
-
-        }
-    }
-
-    /**
-     * @param \Tk\Event\FormEvent $event
-     */
-    public function onFormLoad(\Tk\Event\FormEvent $event)
-    {
-        if ($this->form) {
-            $valueList = \Rate\Db\ValueMap::create()->findFiltered(array('placementId' => $this->controller->getPlacement()->getId()));
-            if ($valueList->current() && $valueList->current()->typeId == 0) {
-                $this->form->setFieldValue('nonAnimal', true);
-            } else {
-                // Map to field value
-                $vals = array();
-                /** @var \Rate\Db\Value $value */
-                foreach ($valueList as $value) {
-                    $vals[$value->questionId] = $value->value;
+                // Individual rating question list
+                $questionList = \Rate\Db\QuestionMap::create()->findFiltered(array('profileId' => $company->profileId));
+                $html = '';
+                foreach ($questionList as $question) {
+                    $value = (float)\Rate\Db\ValueMap::create()->findAverage(array('companyId' => $company->getId(), 'questionId' => $question->getId()));
+                    $html .= sprintf('<li class="rating-question-value"><div class="pull-right">%s</div><span>%s</span></li>',
+                        \Rate\Ui\Stars::create($value, true), $question->text);
                 }
-                $this->form->setFieldValue('animals', $vals);
-            }
-        }
-    }
+                if ($html) {
+                    $tpl = <<<HTML
+<section class="companyRating">
+  <h5 class="content-title">Company Rating</h5>
+  <ul class="star-rating-list">
+    %s
+  </ul>
+</section>
+HTML;
 
-    /**
-     * @param \Tk\Event\FormEvent $event
-     */
-    public function onFormSubmit(\Tk\Event\FormEvent $event)
-    {
-        if ($this->form) {
-            $placement = $this->controller->getPlacement();
-            $list = $this->form->getFieldValue('animals');
-            $nonAnimal = $this->form->getFieldValue('nonAnimal');
-
-            // Check if animals are required
-            if (!$nonAnimal && !count($list)) {
-                $this->form->addFieldError('animals', 'Please enter the type and number of animals.');
-                $this->form->addError('Please enter the type and number of animals.');
-            }
-
-            if ($this->form->hasErrors()) {
-                return;
-            }
-
-            // Remove existing animals
-            \Rate\Db\ValueMap::create()->removeAllByPlacementId($placement->id);
-
-            // re-add all animals in the list
-            if ($nonAnimal) {
-                $valueObj = new \Rate\Db\Value();
-                $valueObj->placementId = $placement->id;
-                $valueObj->questionId = 0;
-                $valueObj->name = '';
-                $valueObj->notes = 'Non Animal Placement';
-                $valueObj->save();
-            } else {
-                foreach ($list as $typeId => $value) {
-                    /** @var \Rate\Db\Question $type */
-                    $type = \Rate\Db\Question::getMapper()->find($typeId);
-                    $valueObj = \Rate\Db\Value::create($placement, $type, $value);
-                    $valueObj->save();
+                    $html = sprintf($tpl, $html);
+                    $template->appendHtml('right-col', $html);
                 }
             }
-
         }
     }
+
 
     /**
      * Check the user has access to this controller
@@ -144,6 +72,7 @@ JS;
      */
     public function onControllerShow(\Tk\Event\Event $event) { }
 
+
     /**
      * @return array The event names to listen to
      * @api
@@ -151,9 +80,7 @@ JS;
     public static function getSubscribedEvents()
     {
         return array(
-            \Tk\Form\FormEvents::FORM_INIT => array(array('onFormPreInit', 0), array('onFormInit', 0)),
-            \Tk\Form\FormEvents::FORM_LOAD => array('onFormLoad', 0),
-            \Tk\Form\FormEvents::FORM_SUBMIT => array('onFormSubmit', 0),
+            \Tk\PageEvents::CONTROLLER_INIT => array('onControllerInit', 0),
             \Tk\PageEvents::CONTROLLER_SHOW => array('onControllerShow', 0)
         );
     }

@@ -23,9 +23,9 @@ class PlacementReportEditHandler implements Subscriber
     private $form = null;
 
     /**
-     * @var \Rate\Db\Question[]|\Tk\Db\Map\ArrayObject
+     * @var null|\Tk\Db\Map\ArrayObject|\Rate\Db\Question[]
      */
-    private $animalTypes = null;
+    private $questionList = null;
 
 
     /**
@@ -37,10 +37,9 @@ class PlacementReportEditHandler implements Subscriber
         $controller = $event->getForm()->get('controller');
         if ($controller instanceof \App\Controller\Placement\ReportEdit) {
             if ($controller->getUser()->isStaff() && $controller->getCourse() && $controller->getPlacement()) {
-                $this->animalTypes = \Rate\Db\QuestionMap::create()->findFiltered(array('profileId' => $controller->getPlacement()->getCourse()->profileId));
-                if (!$this->animalTypes->count()) return;
                 $this->controller = $controller;
                 $this->form = $controller->getForm();
+                $this->questionList = \Rate\Db\QuestionMap::create()->findFiltered(array('profileId' => $this->controller->getProfile()->getId()));
             }
         }
     }
@@ -51,24 +50,11 @@ class PlacementReportEditHandler implements Subscriber
     public function onFormInit(\Tk\Event\FormEvent $event)
     {
         if ($this->form) {
-            $this->form->addField(new \Tk\Form\Field\Checkbox('nonAnimal'))->setFieldset('Animal Types')->setNotes('Is this a non-animal placement?<br/><em>(Note: Checking this box will delete any existing animal data)</em>');
-            $this->form->addField(new \Rate\Form\Field\StarRating('animals', $this->animalTypes, $this->controller->getPlacement()))->setFieldset('Animal Types')->setNotes('If this is an animal placement, add the type and number of animals seen.');
-
-            $formRenderer = $this->form->getRenderer();
-            $template = $formRenderer->getTemplate();
-            $js = <<<JS
-jQuery(function($) {
-  
-  var animalField = $('.tk-animals-field').animalField({}).data('animalField');
-  var f = animalField.getElement().closest('.AnimalTypes').find('input[type=checkbox]').on('change', function (e) {
-      animalField.enable(!$(this).prop('checked'));
-  });
-  animalField.enable(!f.prop('checked'));
-  
-});
-JS;
-            $template->appendJs($js, array('data-jsl-priority' => 10));
-
+            foreach ($this->questionList as $question) {
+                $name = 'sr-' . $question->id;
+                $this->form->addField(new \Rate\Form\Field\StarRating($name))->setFieldset('Company Report')->
+                    setLabel($question->text)->setNotes($question->help);
+            }
 
         }
     }
@@ -79,17 +65,11 @@ JS;
     public function onFormLoad(\Tk\Event\FormEvent $event)
     {
         if ($this->form) {
-            $valueList = \Rate\Db\ValueMap::create()->findFiltered(array('placementId' => $this->controller->getPlacement()->getId()));
-            if ($valueList->current() && $valueList->current()->typeId == 0) {
-                $this->form->setFieldValue('nonAnimal', true);
-            } else {
-                // Map to field value
-                $vals = array();
-                /** @var \Rate\Db\Value $value */
-                foreach ($valueList as $value) {
-                    $vals[$value->questionId] = $value->value;
-                }
-                $this->form->setFieldValue('animals', $vals);
+            foreach ($this->questionList as $question) {
+                $name = 'sr-' . $question->id;
+                $value = \Rate\Db\ValueMap::create()->findValue($question->getId(), $this->controller->getPlacement()->getId());
+                if (!$value) continue;
+                $this->form->setFieldValue($name, $value->value);
             }
         }
     }
@@ -101,37 +81,28 @@ JS;
     {
         if ($this->form) {
             $placement = $this->controller->getPlacement();
-            $list = $this->form->getFieldValue('animals');
-            $nonAnimal = $this->form->getFieldValue('nonAnimal');
 
-            // Check if animals are required
-            if (!$nonAnimal && !count($list)) {
-                $this->form->addFieldError('animals', 'Please enter the type and number of animals.');
-                $this->form->addError('Please enter the type and number of animals.');
-            }
-
-            if ($this->form->hasErrors()) {
-                return;
-            }
-
-            // Remove existing animals
-            \Rate\Db\ValueMap::create()->removeAllByPlacementId($placement->id);
-
-            // re-add all animals in the list
-            if ($nonAnimal) {
-                $valueObj = new \Rate\Db\Value();
-                $valueObj->placementId = $placement->id;
-                $valueObj->questionId = 0;
-                $valueObj->name = '';
-                $valueObj->notes = 'Non Animal Placement';
-                $valueObj->save();
-            } else {
-                foreach ($list as $typeId => $value) {
-                    /** @var \Rate\Db\Question $type */
-                    $type = \Rate\Db\Question::getMapper()->find($typeId);
-                    $valueObj = \Rate\Db\Value::create($placement, $type, $value);
-                    $valueObj->save();
+            // Validate star ratings
+            foreach ($this->questionList as $question) {
+                $name = 'sr-' . $question->id;
+                if (!$this->form->getFieldValue($name)) {
+                    $this->form->addFieldError($name, 'Please select a value for this question.');
                 }
+            }
+
+            if ($this->form->hasErrors()) return;
+
+            // Save the new question values
+            foreach ($this->questionList as $question) {
+                $name = 'sr-' . $question->id;
+                $value = \Rate\Db\ValueMap::create()->findvalue($question->getId(), $placement->getId());
+                if (!$value) {
+                    $value = new \Rate\Db\Value();
+                }
+                $value->placementId = $placement->getId();
+                $value->questionId = $question->getId();
+                $value->value = $this->form->getFieldValue($name);
+                $value->save();
             }
 
         }
