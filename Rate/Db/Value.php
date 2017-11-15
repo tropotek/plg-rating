@@ -18,7 +18,7 @@ class Value extends \Tk\Db\Map\Model
     /**
      * @var int
      */
-    public $typeId = 0;
+    public $questionId = 0;
 
     /**
      * @var int
@@ -28,17 +28,7 @@ class Value extends \Tk\Db\Map\Model
     /**
      * @var string
      */
-    public $name = '';
-
-    /**
-     * @var string
-     */
     public $value = '';
-
-    /**
-     * @var string
-     */
-    public $notes = '';
 
     /**
      * @var \DateTime
@@ -50,10 +40,11 @@ class Value extends \Tk\Db\Map\Model
      */
     public $created = null;
 
+
     /**
-     * @var Type
+     * @var Question
      */
-    private $type = null;
+    private $question = null;
 
     /**
      * @var \App\Db\Placement
@@ -73,18 +64,15 @@ class Value extends \Tk\Db\Map\Model
 
     /**
      * @param \App\Db\Placement $placement
-     * @param \Rate\Db\Type $type
+     * @param \Rate\Db\Question $question
      * @param int $value
-     * @param string $notes
      * @return Value
      */
-    public static function create($placement, $type, $value, $notes = '')
+    public static function create($placement, $question, $value)
     {
-        $obj = new self();
+        $obj = new static();
         $obj->placementId = $placement->id;
-        $obj->typeId = $type->id;
-        $obj->name = $type->name;
-        $obj->notes = $notes;
+        $obj->questionId = $question->id;
         $obj->value = (int)$value;
         return $obj;
     }
@@ -98,14 +86,14 @@ class Value extends \Tk\Db\Map\Model
     }
 
     /**
-     * @return null|Type|\Tk\Db\Map\Model|\Tk\Db\ModelInterface
+     * @return null|Question|\Tk\Db\Map\Model|\Tk\Db\ModelInterface
      */
-    public function getType()
+    public function getQuestion()
     {
-        if (!$this->type) {
-            $this->type = TypeMap::create()->find($this->typeId);
+        if (!$this->question) {
+            $this->question = QuestionMap::create()->find($this->questionId);
         }
-        return $this->type;
+        return $this->question;
     }
 
     /**
@@ -126,14 +114,11 @@ class Value extends \Tk\Db\Map\Model
     {
         $errors = array();
 
-        if ((int)$this->typeId <= 0) {
+        if ((int)$this->questionId <= 0) {
             $errors['typeId'] = 'Invalid Type ID';
         }
         if ((int)$this->placementId <= 0) {
             $errors['placementId'] = 'Invalid Placement ID';
-        }
-        if (!$this->name) {
-            $errors['name'] = 'Please enter a valid course name';
         }
 
         return $errors;

@@ -11,7 +11,7 @@ namespace Rate\Form\Field;
 class Animals extends \Tk\Form\Field\Iface
 {
     /**
-     * @var \Rate\Db\Type[]|\Tk\Db\Map\ArrayObject
+     * @var \Rate\Db\Question[]|\Tk\Db\Map\ArrayObject
      */
     private $typeList = null;
 
@@ -23,7 +23,7 @@ class Animals extends \Tk\Form\Field\Iface
 
     /**
      * @param string $name
-     * @param \Rate\Db\Type[]|\Tk\Db\Map\ArrayObject $typeList
+     * @param \Rate\Db\Question[]|\Tk\Db\Map\ArrayObject $typeList
      * @param \App\Db\Placement $placement
      * @throws \Tk\Exception
      */
@@ -86,10 +86,10 @@ class Animals extends \Tk\Form\Field\Iface
         $selEl = $repeat->getForm()->getFormElement('typeId');
         /** @var \Dom\Form\Select $selEl2 */
         $selEl2 = $template->getForm()->getFormElement('typeId-add');
-        /** @var \Rate\Db\Type $type */
+        /** @var \Rate\Db\Question $type */
         foreach ($this->typeList as $type) {
-            $selEl->appendOption($type->name, $type->id);
-            $selEl2->appendOption($type->name, $type->id);
+            $selEl->appendOption($type->text, $type->id);
+            $selEl2->appendOption($type->text, $type->id);
         }
         $repeat->appendRepeat();
 
@@ -103,9 +103,9 @@ class Animals extends \Tk\Form\Field\Iface
                 /** @var \Dom\Form\Select $selEl */
                 $selEl = $repeat->getForm()->getFormElement('typeId');
 
-                /** @var \Rate\Db\Type $type */
+                /** @var \Rate\Db\Question $type */
                 foreach ($this->typeList as $type) {
-                    $selEl->appendOption($type->name, $type->id);
+                    $selEl->appendOption($type->text, $type->id);
                 }
                 $selEl->setValue($typeId);
                 //$repeat->getForm()->getFormElement('valueId')->setValue('0');

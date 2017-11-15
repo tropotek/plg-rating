@@ -1,5 +1,5 @@
 <?php
-namespace Rate\Controller\Type;
+namespace Rate\Controller\Question;
 
 use App\Controller\AdminManagerIface;
 use Dom\Template;
@@ -35,7 +35,7 @@ class Manager extends AdminManagerIface
     public function __construct()
     {
         parent::__construct();
-        $this->setPageTitle('Animal Type Manager');
+        $this->setPageTitle('Rating Question Manager');
     }
 
     /**
@@ -48,19 +48,21 @@ class Manager extends AdminManagerIface
         if (!$this->profile && $this->getCourse())
             $this->profile = $this->getCourse()->getProfile();
 
-        $this->editUrl = \App\Uri::createHomeUrl('/animalTypeEdit.html');
+        $this->editUrl = \App\Uri::createHomeUrl('/ratingQuestionEdit.html');
 
         $u = clone $this->editUrl;
-        $this->getActionPanel()->addButton(\Tk\Ui\Button::create('New Type',
-            $u->set('profileId', $this->profile->getId()), 'fa fa-paw'));
+        $this->getActionPanel()->addButton(\Tk\Ui\Button::create('New Question',
+            $u->set('profileId', $this->profile->getId()), 'fa fa-star'));
 
-        $this->table = \App\Factory::createTable(\Tk\Object::basename($this).'_typeList');
+        $this->table = \App\Factory::createTable(\Tk\Object::basename($this).'_questionList');
         $this->table->setParam('renderer', \App\Factory::createTableRenderer($this->table));
 
         $this->table->addCell(new \Tk\Table\Cell\Checkbox('id'));
-        $this->table->addCell(new \Tk\Table\Cell\Text('name'))->addCss('key')->setUrl(clone $this->editUrl);
-        $this->table->addCell(new \Tk\Table\Cell\Text('min'));
-        $this->table->addCell(new \Tk\Table\Cell\Text('max'));
+        $this->table->addCell(new \Tk\Table\Cell\Text('text'))->addCss('key')->setUrl(clone $this->editUrl)->
+        setOnCellHtml(function($cell, $obj, $html) {
+            vd($obj);
+            return $html;
+        });
         $this->table->addCell(new \Tk\Table\Cell\Date('modified'));
 
         // Filters
@@ -79,7 +81,7 @@ class Manager extends AdminManagerIface
     {
         $filter = $this->table->getFilterValues();
         $filter['profileId'] = $this->profile->getId();
-        return \Rate\Db\TypeMap::create()->findFiltered($filter, $this->table->makeDbTool());
+        return \Rate\Db\QuestionMap::create()->findFiltered($filter, $this->table->makeDbTool());
     }
 
     /**
@@ -106,7 +108,7 @@ class Manager extends AdminManagerIface
 
   <div class="panel panel-default">
     <div class="panel-heading">
-      <h4 class="panel-title"><i class="fa fa-paw"></i> Animal Types</h4>
+      <h4 class="panel-title"><i class="fa fa-star"></i> Rating Questions</h4>
     </div>
     <div class="panel-body">
       <div var="table"></div>

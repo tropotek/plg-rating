@@ -9,7 +9,7 @@ use Rate\Plugin;
  * @link http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
  */
-class ReportEditHandler implements Subscriber
+class CompanyViewHandler implements Subscriber
 {
 
     /**
@@ -23,7 +23,7 @@ class ReportEditHandler implements Subscriber
     private $form = null;
 
     /**
-     * @var \Rate\Db\Type[]|\Tk\Db\Map\ArrayObject
+     * @var \Rate\Db\Question[]|\Tk\Db\Map\ArrayObject
      */
     private $animalTypes = null;
 
@@ -37,7 +37,7 @@ class ReportEditHandler implements Subscriber
         $controller = $event->getForm()->get('controller');
         if ($controller instanceof \App\Controller\Placement\ReportEdit) {
             if ($controller->getUser()->isStaff() && $controller->getCourse() && $controller->getPlacement()) {
-                $this->animalTypes = \Rate\Db\TypeMap::create()->findFiltered(array('profileId' => $controller->getPlacement()->getCourse()->profileId));
+                $this->animalTypes = \Rate\Db\QuestionMap::create()->findFiltered(array('profileId' => $controller->getPlacement()->getCourse()->profileId));
                 if (!$this->animalTypes->count()) return;
                 $this->controller = $controller;
                 $this->form = $controller->getForm();
@@ -87,7 +87,7 @@ JS;
                 $vals = array();
                 /** @var \Rate\Db\Value $value */
                 foreach ($valueList as $value) {
-                    $vals[$value->typeId] = $value->value;
+                    $vals[$value->questionId] = $value->value;
                 }
                 $this->form->setFieldValue('animals', $vals);
             }
@@ -121,14 +121,14 @@ JS;
             if ($nonAnimal) {
                 $valueObj = new \Rate\Db\Value();
                 $valueObj->placementId = $placement->id;
-                $valueObj->typeId = 0;
+                $valueObj->questionId = 0;
                 $valueObj->name = '';
                 $valueObj->notes = 'Non Animal Placement';
                 $valueObj->save();
             } else {
                 foreach ($list as $typeId => $value) {
-                    /** @var \Rate\Db\Type $type */
-                    $type = \Rate\Db\Type::getMapper()->find($typeId);
+                    /** @var \Rate\Db\Question $type */
+                    $type = \Rate\Db\Question::getMapper()->find($typeId);
                     $valueObj = \Rate\Db\Value::create($placement, $type, $value);
                     $valueObj->save();
                 }

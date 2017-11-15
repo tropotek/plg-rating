@@ -37,7 +37,7 @@ class ProfileSettings extends Iface
      */
     public function __construct()
     {
-        $this->setPageTitle('Animal Plugin Profile Settings');
+        $this->setPageTitle('Rating Plugin Profile Settings');
     }
 
     /**

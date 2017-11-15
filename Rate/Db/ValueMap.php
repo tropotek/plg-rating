@@ -31,14 +31,12 @@ class ValueMap extends \App\Db\Mapper
     public function getDbMap()
     {
         if (!$this->dbMap) {
-            $this->setTable('animal_value');
+            $this->setTable('rating_value');
             $this->dbMap = new \Tk\DataMap\DataMap();
             $this->dbMap->addPropertyMap(new Db\Integer('id'), 'key');
-            $this->dbMap->addPropertyMap(new Db\Integer('typeId', 'type_id'));
+            $this->dbMap->addPropertyMap(new Db\Integer('quextionId', 'question_id'));
             $this->dbMap->addPropertyMap(new Db\Integer('placementId', 'placement_id'));
-            $this->dbMap->addPropertyMap(new Db\Text('name'));
             $this->dbMap->addPropertyMap(new Db\Text('value'));
-            $this->dbMap->addPropertyMap(new Db\Text('notes'));
             $this->dbMap->addPropertyMap(new Db\Date('modified'));
             $this->dbMap->addPropertyMap(new Db\Date('created'));
         }
@@ -53,11 +51,9 @@ class ValueMap extends \App\Db\Mapper
         if (!$this->formMap) {
             $this->formMap = new \Tk\DataMap\DataMap();
             $this->formMap->addPropertyMap(new Form\Integer('id'), 'key');
-            $this->formMap->addPropertyMap(new Form\Integer('typeId'));
+            $this->formMap->addPropertyMap(new Form\Integer('questionId'));
             $this->formMap->addPropertyMap(new Form\Integer('placementId'));
-            $this->formMap->addPropertyMap(new Form\Text('name'));
             $this->formMap->addPropertyMap(new Form\Text('value'));
-            $this->formMap->addPropertyMap(new Form\Text('notes'));
         }
         return $this->formMap;
     }
@@ -89,8 +85,7 @@ class ValueMap extends \App\Db\Mapper
         if (!empty($filter['keywords'])) {
             $kw = '%' . $this->getDb()->escapeString($filter['keywords']) . '%';
             $w = '';
-            $w .= sprintf('a.name LIKE %s OR ', $this->getDb()->quote($kw));
-            $w .= sprintf('a.notes LIKE %s OR ', $this->getDb()->quote($kw));
+            $w .= sprintf('a.value LIKE %s OR ', $this->getDb()->quote($kw));
             if (is_numeric($filter['keywords'])) {
                 $id = (int)$filter['keywords'];
                 $w .= sprintf('a.id = %d OR ', $id);
@@ -100,17 +95,17 @@ class ValueMap extends \App\Db\Mapper
             }
         }
 
-        if (!empty($filter['typeId'])) {
-            $where .= sprintf('a.type_id = %s AND ', (int)$filter['typeId']);
+        if (!empty($filter['questionId'])) {
+            $where .= sprintf('a.question_id = %s AND ', (int)$filter['typeId']);
         }
 
         if (!empty($filter['placementId'])) {
-            $where .= sprintf('a.placement_id = %s AND ', (int)$filter['placementId']);
+            $where .= sprintf('a.placement_id = %s AND ', (int)$filter['questionId']);
         }
 
         if (!empty($filter['profileId']) || !empty($filter['courseId'])) {
-            $from .= sprintf(', %s b', $this->quoteTable('animal_type'));
-            $where .= sprintf('a.type_id = b.id AND ');
+            $from .= sprintf(', %s b', $this->quoteTable('rating_question'));
+            $where .= sprintf('a.question_id = b.id AND ');
             if (!empty($filter['profileId'])) {
                 $where .= sprintf('b.profile_id = %s AND ', (int)$filter['profileId']);
             }
@@ -118,10 +113,6 @@ class ValueMap extends \App\Db\Mapper
                 $from .= sprintf(', %s c', $this->quoteTable('placement'));
                 $where .= sprintf('a.placement_id = c.id AND c.course_id = %s AND ', (int)$filter['courseId']);
             }
-        }
-
-        if (!empty($filter['name'])) {
-            $where .= sprintf('a.name = %s AND ', $this->quote($filter['name']));
         }
 
         if (!empty($filter['value'])) {
@@ -155,26 +146,6 @@ class ValueMap extends \App\Db\Mapper
 
     }
 
-    /**
-     * @param array $filter
-     * @param Tool $tool
-     * @return array
-     */
-    public function findTotals($filter, $tool = null)
-    {
-        list($from, $where) = $this->processFilter($filter);
-        if (!$where) $where = '1';
-
-        $sql = sprintf('SELECT a.name, a.type_id, SUM(a.value) AS total, COUNT(a.id) as \'count\'
-FROM %s
-WHERE %s
-GROUP BY a.type_id
-ORDER BY a.name', $from, $where);
-        $stm = $this->getDb()->prepare($sql);
-        $stm->execute();
-        $r = $stm->fetchAll();
-        return $r;
-    }
 
 
 }

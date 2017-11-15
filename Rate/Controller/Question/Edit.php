@@ -1,5 +1,5 @@
 <?php
-namespace Rate\Controller\Type;
+namespace Rate\Controller\Question;
 
 use App\Controller\AdminEditIface;
 use Dom\Template;
@@ -17,9 +17,9 @@ class Edit extends AdminEditIface
 {
 
     /**
-     * @var \Rate\Db\Type
+     * @var \Rate\Db\Question
      */
-    protected $type = null;
+    protected $question = null;
 
 
 
@@ -29,7 +29,7 @@ class Edit extends AdminEditIface
     public function __construct()
     {
         parent::__construct();
-        $this->setPageTitle('Animal Type Edit');
+        $this->setPageTitle('Rating Question Edit');
     }
 
     /**
@@ -38,28 +38,27 @@ class Edit extends AdminEditIface
      */
     public function doDefault(Request $request)
     {
-        $this->type = new \Rate\Db\Type();
-        $this->type->profileId = (int)$request->get('profileId');
-        if ($request->get('typeId')) {
-            $this->type = \Rate\Db\TypeMap::create()->find($request->get('typeId'));
+        $this->question = new \Rate\Db\Question();
+        $this->question->profileId = (int)$request->get('profileId');
+        if ($request->get('questionId')) {
+            $this->question = \Rate\Db\QuestionMap::create()->find($request->get('questionId'));
         }
 
         $this->buildForm();
 
-        $this->form->load(\Rate\Db\TypeMap::create()->unmapForm($this->type));
+        $this->form->load(\Rate\Db\QuestionMap::create()->unmapForm($this->question));
         $this->form->execute($request);
     }
 
 
     protected function buildForm() 
     {
-        $this->form = \App\Factory::createForm('animalTypeEdit');
+        $this->form = \App\Factory::createForm('ratingQuestionEdit');
         $this->form->setRenderer(\App\Factory::createFormRenderer($this->form));
 
-        $this->form->addField(new Field\Input('name'));
-        $this->form->addField(new \App\Form\Field\MinMax('min', 'max'));
-        $this->form->addField(new Field\Textarea('description'));
-        $this->form->addField(new Field\Textarea('notes'));
+        $this->form->addField(new Field\Input('text'));
+        $this->form->addField(new Field\Input('help'));
+        $this->form->addField(new Field\Checkbox('total'))->setNotes('Add this questions values to the companies total rating calculations.');
 
         $this->form->addField(new Event\Button('update', array($this, 'doSubmit')));
         $this->form->addField(new Event\Button('save', array($this, 'doSubmit')));
@@ -73,20 +72,20 @@ class Edit extends AdminEditIface
     public function doSubmit($form)
     {
         // Load the object with data from the form using a helper object
-        \Rate\Db\TypeMap::create()->mapForm($form->getValues(), $this->type);
+        \Rate\Db\QuestionMap::create()->mapForm($form->getValues(), $this->question);
 
-        $form->addFieldErrors($this->type->validate());
+        $form->addFieldErrors($this->question->validate());
 
         if ($form->hasErrors()) {
             return;
         }
-        $this->type->save();
+        $this->question->save();
 
         \Tk\Alert::addSuccess('Record saved!');
         if ($form->getTriggeredEvent()->getName() == 'update') {
             \App\Factory::getCrumbs()->getBackUrl()->redirect();
         }
-        \Tk\Uri::create()->set('typeId', $this->type->getId())->redirect();
+        \Tk\Uri::create()->set('questionId', $this->question->getId())->redirect();
     }
 
     /**
@@ -114,7 +113,7 @@ class Edit extends AdminEditIface
     
   <div class="panel panel-default">
     <div class="panel-heading">
-      <h4 class="panel-title"><i class="fa fa-paw"></i> <span var="panel-title">Animal Type Edit</span></h4>
+      <h4 class="panel-title"><i class="fa fa-star"></i> <span var="panel-title">Rating Question Edit</span></h4>
     </div>
     <div class="panel-body">
       <div var="form"></div>

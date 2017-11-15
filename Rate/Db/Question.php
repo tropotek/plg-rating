@@ -7,7 +7,7 @@ namespace Rate\Db;
  * @link http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
  */
-class Type extends \Tk\Db\Map\Model
+class Question extends \Tk\Db\Map\Model
 {
     
     /**
@@ -23,32 +23,17 @@ class Type extends \Tk\Db\Map\Model
     /**
      * @var string
      */
-    public $name = '';
+    public $text = '';
+
+    /**
+     * @var boolean
+     */
+    public $total = true;
 
     /**
      * @var string
      */
-    public $description = '';
-
-    /**
-     * @var int
-     */
-    public $min = 0;
-
-    /**
-     * @var int
-     */
-    public $max = 0;
-
-    /**
-     * @var string
-     */
-    public $notes = '';
-
-    /**
-     * @var \DateTime
-     */
-    public $modified = null;
+    public $help = '';
 
     /**
      * @var int
@@ -58,7 +43,13 @@ class Type extends \Tk\Db\Map\Model
     /**
      * @var \DateTime
      */
+    public $modified = null;
+
+    /**
+     * @var \DateTime
+     */
     public $created = null;
+
 
     /**
      * @var \App\Db\Profile
@@ -105,8 +96,8 @@ class Type extends \Tk\Db\Map\Model
         if ((int)$this->profileId <= 0) {
             $errors['profileId'] = 'Invalid Profile ID';
         }
-        if (!$this->name) {
-            $errors['name'] = 'Please enter a valid course name';
+        if (!$this->text) {
+            $errors['text'] = 'Please enter a valid text';
         }
 
         return $errors;

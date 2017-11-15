@@ -32,7 +32,7 @@ class SystemSettings extends Iface
      */
     public function __construct()
     {
-        $this->setPageTitle('Animal Plugin Settings');
+        $this->setPageTitle('Rating Plugin Settings');
 
         /** @var Plugin $plugin */
         $plugin = Plugin::getInstance();

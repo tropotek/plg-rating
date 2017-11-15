@@ -12,7 +12,7 @@ use Tk\DataMap\Form;
  * @link http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
  */
-class TypeMap extends \App\Db\Mapper
+class QuestionMap extends \App\Db\Mapper
 {
 
     /**
@@ -21,15 +21,13 @@ class TypeMap extends \App\Db\Mapper
     public function getDbMap()
     {
         if (!$this->dbMap) {
-            $this->setTable('animal_type');
+            $this->setTable('rating_question');
             $this->dbMap = new \Tk\DataMap\DataMap();
             $this->dbMap->addPropertyMap(new Db\Integer('id'), 'key');
             $this->dbMap->addPropertyMap(new Db\Integer('profileId', 'profile_id'));
-            $this->dbMap->addPropertyMap(new Db\Text('name'));
-            $this->dbMap->addPropertyMap(new Db\Text('description'));
-            $this->dbMap->addPropertyMap(new Db\Integer('min'));
-            $this->dbMap->addPropertyMap(new Db\Integer('max'));
-            $this->dbMap->addPropertyMap(new Db\Text('notes'));
+            $this->dbMap->addPropertyMap(new Db\Text('text'));
+            $this->dbMap->addPropertyMap(new Db\Boolean('total'));
+            $this->dbMap->addPropertyMap(new Db\Text('help'));
             $this->dbMap->addPropertyMap(new Db\Integer('orderBy', 'order_by'));
             $this->dbMap->addPropertyMap(new Db\Date('modified'));
             $this->dbMap->addPropertyMap(new Db\Date('created'));
@@ -46,11 +44,9 @@ class TypeMap extends \App\Db\Mapper
             $this->formMap = new \Tk\DataMap\DataMap();
             $this->formMap->addPropertyMap(new Form\Integer('id'), 'key');
             $this->formMap->addPropertyMap(new Form\Integer('profileId'));
-            $this->formMap->addPropertyMap(new Form\Text('name'));
-            $this->formMap->addPropertyMap(new Form\Text('description'));
-            $this->formMap->addPropertyMap(new Form\Integer('min'));
-            $this->formMap->addPropertyMap(new Form\Integer('max'));
-            $this->formMap->addPropertyMap(new Form\Text('notes'));
+            $this->formMap->addPropertyMap(new Form\Text('text'));
+            $this->formMap->addPropertyMap(new Form\Boolean('total'));
+            $this->formMap->addPropertyMap(new Form\Text('help'));
             $this->formMap->addPropertyMap(new Form\Integer('orderBy'));
         }
         return $this->formMap;
@@ -84,8 +80,8 @@ class TypeMap extends \App\Db\Mapper
         if (!empty($filter['keywords'])) {
             $kw = '%' . $this->getDb()->escapeString($filter['keywords']) . '%';
             $w = '';
-            $w .= sprintf('a.name LIKE %s OR ', $this->getDb()->quote($kw));
-            $w .= sprintf('a.description LIKE %s OR ', $this->getDb()->quote($kw));
+            $w .= sprintf('a.text LIKE %s OR ', $this->getDb()->quote($kw));
+            $w .= sprintf('a.help LIKE %s OR ', $this->getDb()->quote($kw));
             if (is_numeric($filter['keywords'])) {
                 $id = (int)$filter['keywords'];
                 $w .= sprintf('a.id = %d OR ', $id);
