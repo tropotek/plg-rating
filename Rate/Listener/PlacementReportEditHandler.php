@@ -50,6 +50,7 @@ class PlacementReportEditHandler implements Subscriber
     public function onFormInit(\Tk\Event\FormEvent $event)
     {
         if ($this->form) {
+            $this->form->addField(new \Tk\Form\Field\Html('Company Rating', 'Please rate your experience with this company'))->setFieldset('Company Report');
             foreach ($this->questionList as $question) {
                 $name = 'sr-' . $question->id;
                 $this->form->addField(new \Rate\Form\Field\StarRating($name))->setFieldset('Company Report')->

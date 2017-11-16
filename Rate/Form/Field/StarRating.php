@@ -170,6 +170,10 @@ class StarRating extends \Tk\Form\Field\Input
     {
         $template = $this->getTemplate();
 
+        $template->insertText('question', $this->getLabel());
+        $this->setLabel('');
+
+
         $template->appendCssUrl(\Tk\Uri::create('/vendor/kartik-v/bootstrap-star-rating/css/star-rating.min.css'));
         $template->appendJsUrl(\Tk\Uri::create('/vendor/kartik-v/bootstrap-star-rating/js/star-rating.min.js'));
 
@@ -179,7 +183,7 @@ class StarRating extends \Tk\Form\Field\Input
         $template->setAttr('element', 'max', $this->getMax());
         $template->setAttr('element', 'step', $this->getStep());
         $template->setAttr('element', 'data-size', 'xs');
-        $template->setAttr('element', 'data-show-clear', 'true');   // show the clear button
+        $template->setAttr('element', 'data-show-clear', 'false');   // show the clear button
 
         if (is_array($this->starCaptions) && count($this->starCaptions)) {
             $template->setAttr('element', 'data-show-caption', 'true');
@@ -213,6 +217,7 @@ JS;
 
         $xhtml = <<<HTML
 <div class="tk-star-rating">
+  <label var="question"></label>
   <input type="text" var="element" class="form-control" />
 </div>
 HTML;
