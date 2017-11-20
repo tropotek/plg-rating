@@ -193,7 +193,7 @@ WHERE %s', $from, $where);
         $stm = $this->getDb()->prepare($sql);
         $stm->execute();
         $r = $stm->fetch();
-        vd($r->avg);
+        
         return $r->avg;
     }
 
