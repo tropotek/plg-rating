@@ -52,7 +52,7 @@ class Manager extends AdminManagerIface
 
         $u = clone $this->editUrl;
         $this->getActionPanel()->addButton(\Tk\Ui\Button::create('New Question',
-            $u->set('profileId', $this->profile->getId()), 'fa fa-star'));
+            $u->set('profileId', $this->profile->getId()), 'fa fa-star fa-add-action'));
 
         $this->table = \App\Factory::createTable(\Tk\Object::basename($this).'_questionList');
         $this->table->setRenderer(\App\Factory::createTableRenderer($this->table));
