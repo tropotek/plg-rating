@@ -30,39 +30,84 @@ class CompanyViewHandler implements Subscriber
         if ($this->controller instanceof \App\Controller\Company\View) {
             if ($this->controller->getUser()->isStaff() || $this->controller->getUser()->isStudent()) {
                 $template = $this->controller->getTemplate();
-                $company = $this->controller->getCompany();
-
-                // Company Profile Total
-                $value = (float)\Rate\Db\ValueMap::create()->findAverage(array('companyId' => $company->getId()));
-                $html = sprintf('<div class="rate-star-rating pull-right"><em>Star Rating</em><br/>%s</div>', \Rate\Ui\Stars::create($value, true));
-                $template->appendHtml('top-col-right', $html);
-
                 $template->appendCssUrl(\Tk\Uri::create(Plugin::getInstance()->getPluginPath().'/assets/rating.less'));
 
-                // Individual rating question list
-                $questionList = \Rate\Db\QuestionMap::create()->findFiltered(array('profileId' => $company->profileId));
-                $html = '';
-                foreach ($questionList as $question) {
-                    $value = (float)\Rate\Db\ValueMap::create()->findAverage(array('companyId' => $company->getId(), 'questionId' => $question->getId()));
-                    $html .= sprintf('<li class="rating-question-value"><div class="pull-right">%s</div><span>%s</span></li>',
-                        \Rate\Ui\Stars::create($value, true), $question->text);
+                // TODO: Make these a configurable option in the profile plugin settings
+                //$this->showCompanyRatings($this->controller);
+                $this->showCompanyRatingTotal($this->controller);
+                $this->showCommentsRating($this->controller);
+            }
+        }
+    }
+
+    /**
+     * @param \App\Controller\Company\View $controller
+     */
+    protected function showCommentsRating($controller)
+    {
+        $commentTable = $controller->getCommentTable();
+        $table = $commentTable->getTable();
+
+        $table->addCellBefore($table->findCell('title'), new \Tk\Table\Cell\Text('rating'))
+            ->setOnCellHtml(
+                function ($cell, $obj, $html) {
+                    /** @var \Tk\Table\Cell\Iface $cell */
+                    /** @var \App\Db\PlacementReport $obj */
+                    $cell->addCss('pull-right');
+                    $value = (float)\Rate\Db\ValueMap::create()->findAverage(array('companyId' => $obj->getPlacement()->companyId, 'placementId' => $obj->placementId));
+                    if (!$value) return '';
+                    return sprintf('<div class="rate-star-rating"><em>Star Rating</em><br/>%s</div>', \Rate\Ui\Stars::create($value, true));
                 }
-                if ($html) {
-                    $tpl = <<<HTML
+            );
+    }
+
+    /**
+     * @param \App\Controller\Company\View $controller
+     */
+    protected function showCompanyRatings($controller)
+    {
+        $template = $controller->getTemplate();
+        $company = $controller->getCompany();
+
+        // Individual rating question list
+        $questionList = \Rate\Db\QuestionMap::create()->findFiltered(array('profileId' => $company->profileId));
+        $html = '';
+        foreach ($questionList as $question) {
+            $value = (float)\Rate\Db\ValueMap::create()->findAverage(array('companyId' => $company->getId(), 'questionId' => $question->getId()));
+            $html .= sprintf('<li class="rating-question-value"><div class="pull-right">%s</div><span>%s</span></li>',
+                \Rate\Ui\Stars::create($value, true), $question->text);
+        }
+        if ($html) {
+            $tpl = <<<HTML
 <section class="companyRating">
-  <h5 class="content-title">Company Rating</h5>
+  <h5 class="content-title">Rating</h5>
   <ul class="star-rating-list">
     %s
   </ul>
 </section>
 HTML;
 
-                    $html = sprintf($tpl, $html);
-                    $template->appendHtml('right-col', $html);
-                }
-            }
+            $html = sprintf($tpl, $html);
+            $template->appendHtml('right-col', $html);
         }
     }
+
+    /**
+     * @param \App\Controller\Company\View $controller
+     */
+    protected function showCompanyRatingTotal($controller)
+    {
+        $template = $controller->getTemplate();
+        $company = $controller->getCompany();
+
+        // Company Profile Total
+        $value = (float)\Rate\Db\ValueMap::create()->findAverage(array('companyId' => $company->getId()));
+        $html = sprintf('<div class="rate-star-rating pull-right"><em>Star Rating</em><br/>%s</div>', \Rate\Ui\Stars::create($value, true));
+        $template->appendHtml('top-col-right', $html);
+    }
+
+
+
 
 
     /**
