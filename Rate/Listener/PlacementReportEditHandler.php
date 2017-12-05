@@ -36,7 +36,7 @@ class PlacementReportEditHandler implements Subscriber
         /** @var \App\Controller\Placement\ReportEdit $controller */
         $controller = $event->getForm()->get('controller');
         if ($controller instanceof \App\Controller\Placement\ReportEdit) {
-            if ($controller->getUser()->isStaff() && $controller->getCourse() && $controller->getPlacement()) {
+            if ($controller->getCourse() && $controller->getPlacement()) {
                 $this->controller = $controller;
                 $this->form = $controller->getForm();
                 $this->questionList = \Rate\Db\QuestionMap::create()->findFiltered(array('profileId' => $this->controller->getProfile()->getId()));
