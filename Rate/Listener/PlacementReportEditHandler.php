@@ -2,7 +2,7 @@
 namespace Rate\Listener;
 
 use Tk\Event\Subscriber;
-use Rate\Plugin;
+
 
 /**
  * @author Michael Mifsud <info@tropotek.com>
@@ -46,22 +46,25 @@ class PlacementReportEditHandler implements Subscriber
 
     /**
      * @param \Tk\Event\FormEvent $event
+     * @throws \Tk\Exception
      */
     public function onFormInit(\Tk\Event\FormEvent $event)
     {
         if ($this->form) {
-            $this->form->addField(new \Tk\Form\Field\Html('Company Rating', 'Please rate your experience with this company'))->setFieldset('Company Report');
+            $companyStr = \App\Db\Phrase::findValue('company', $this->controller->getProfile()->getId());
+            $this->form->addField(new \Tk\Form\Field\Html($companyStr . ' Rating', 'Please rate your experience with this ' . strtolower($companyStr)))
+                ->setFieldset($companyStr . ' Report');
             foreach ($this->questionList as $question) {
                 $name = 'sr-' . $question->id;
-                $this->form->addField(new \Rate\Form\Field\StarRating($name))->setFieldset('Company Report')->
+                $this->form->addField(new \Rate\Form\Field\StarRating($name))->setFieldset($companyStr . ' Report')->
                     setLabel($question->text)->setNotes($question->help);
             }
-
         }
     }
 
     /**
      * @param \Tk\Event\FormEvent $event
+     * @throws \Tk\Exception
      */
     public function onFormLoad(\Tk\Event\FormEvent $event)
     {

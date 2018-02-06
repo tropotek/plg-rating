@@ -35,6 +35,8 @@ class Edit extends AdminEditIface
     /**
      *
      * @param Request $request
+     * @throws \Tk\Exception
+     * @throws \Tk\Form\Exception
      */
     public function doDefault(Request $request)
     {
@@ -50,7 +52,9 @@ class Edit extends AdminEditIface
         $this->form->execute($request);
     }
 
-
+    /**
+     * @throws \Tk\Form\Exception
+     */
     protected function buildForm() 
     {
         $this->form = \App\Config::getInstance()->createForm('ratingQuestionEdit');
@@ -58,7 +62,8 @@ class Edit extends AdminEditIface
 
         $this->form->addField(new Field\Input('text'));
         $this->form->addField(new Field\Input('help'));
-        $this->form->addField(new Field\Checkbox('total'))->setNotes('Add this questions values to the companies total rating calculations.');
+        $this->form->addField(new Field\Checkbox('total'))->setNotes('Add this questions values to the ' .
+            \App\Db\Phrase::findValue('company', $this->question->profileId) . ' total rating calculations.');
 
         $this->form->addField(new Event\Button('update', array($this, 'doSubmit')));
         $this->form->addField(new Event\Button('save', array($this, 'doSubmit')));

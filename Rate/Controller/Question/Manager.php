@@ -40,7 +40,7 @@ class Manager extends AdminManagerIface
 
     /**
      * @param Request $request
-     * @throws \Tk\Exception
+     * @throws \Tk\Form\Exception
      */
     public function doDefault(Request $request)
     {
@@ -73,6 +73,9 @@ class Manager extends AdminManagerIface
 
     }
 
+    /**
+     * @return \Rate\Db\Question[]|\Tk\Db\Map\ArrayObject
+     */
     protected function getList()
     {
         $filter = $this->table->getFilterValues();

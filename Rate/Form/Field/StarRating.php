@@ -41,10 +41,9 @@ class StarRating extends \Tk\Form\Field\Input
     protected $starCaptions = array('Not Rated', 'Strongly Disagree', 'Disagree', 'Acceptable', 'Agree', 'Strongly Agree');
 
 
-
     /**
      * @param string $name
-     * @throws \Tk\Exception
+     * @throws \Tk\Form\Exception
      */
     public function __construct($name)
     {
