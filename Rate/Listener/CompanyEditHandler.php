@@ -52,7 +52,7 @@ class CompanyEditHandler implements Subscriber
   <div class="panel panel-default" choice="hide">
     <div class="panel-heading">
       %s
-      <h4 class="panel-title"><i class="fa fa-star"></i> <span>Star Rating</span></h4>
+      <h4 class="panel-title"><i class="fa fa-star"></i> <span>%s</span></h4>
     </div>
     <div class="panel-body">
       <ul class="star-rating-list">
@@ -62,7 +62,7 @@ class CompanyEditHandler implements Subscriber
   </div>
 HTML;
 
-                    $html = sprintf($tpl, $totalHtml, $html);
+                    $html = sprintf($tpl, $totalHtml, \App\Db\Phrase::findValue('star-rating', $company->profileId), $html);
                     $template->appendHtml('edit', $html);
                 }
 

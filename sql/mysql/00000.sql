@@ -27,3 +27,21 @@ CREATE TABLE IF NOT EXISTS rating_value (
   INDEX (placement_id, question_id),
   INDEX (placement_id)
 ) ENGINE=InnoDB;
+
+
+REPLACE INTO `phrase`
+SET `key` = 'star-rating',
+  `singular` = 'Star Rating',
+  `plural` = 'Star Ratings',
+  `description` = '',
+  `modified` = NOW(), `created` = NOW()
+;
+REPLACE INTO `phrase`
+SET `key` = 'company-view-star-rating',
+  `singular` = 'Overall %star-rating%',
+  `plural` = 'Overall %star-rating:2%',
+  `description` = 'Title for the company view star rating',
+  `modified` = NOW(), `created` = NOW()
+;
+
+

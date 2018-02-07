@@ -56,7 +56,8 @@ class CompanyViewHandler implements Subscriber
                     $cell->addCss('pull-right');
                     $value = (float)\Rate\Db\ValueMap::create()->findAverage(array('companyId' => $obj->getPlacement()->companyId, 'placementId' => $obj->placementId));
                     if (!$value) return '';
-                    return sprintf('<div class="rate-star-rating"><em>Star Rating</em><br/>%s</div>', \Rate\Ui\Stars::create($value, true));
+                    return sprintf('<div class="rate-star-rating"><em>%s</em><br/>%s</div>',
+                        \App\Db\Phrase::findValue('star-rating', $obj->getPlacement()->getCourse()->profileId), \Rate\Ui\Stars::create($value, true));
                 }
             );
     }
@@ -80,14 +81,14 @@ class CompanyViewHandler implements Subscriber
         if ($html) {
             $tpl = <<<HTML
 <section class="companyRating">
-  <h5 class="content-title">Rating</h5>
+  <h5 class="content-title">%s</h5>
   <ul class="star-rating-list">
     %s
   </ul>
 </section>
 HTML;
 
-            $html = sprintf($tpl, $html);
+            $html = sprintf($tpl, \App\Db\Phrase::findValue('star-rating', $company->profileId), $html);
             $template->appendHtml('right-col', $html);
         }
     }
@@ -102,7 +103,8 @@ HTML;
 
         // Company Profile Total
         $value = (float)\Rate\Db\ValueMap::create()->findAverage(array('companyId' => $company->getId()));
-        $html = sprintf('<div class="rate-star-rating pull-right"><em>Star Rating</em><br/>%s</div>', \Rate\Ui\Stars::create($value, true));
+        $html = sprintf('<div class="rate-star-rating pull-right"><em>%s</em><br/>%s</div>',
+            \App\Db\Phrase::findValue('company-view-star-rating', $company->profileId), \Rate\Ui\Stars::create($value, true));
         $template->appendHtml('top-col-right', $html);
     }
 
