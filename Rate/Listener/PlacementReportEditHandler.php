@@ -51,12 +51,13 @@ class PlacementReportEditHandler implements Subscriber
     public function onFormInit(\Tk\Event\FormEvent $event)
     {
         if ($this->form) {
+            $reportLabel = \App\Db\Phrase::findValue('report', $this->controller->getProfile()->getId());
             $companyStr = \App\Db\Phrase::findValue('company', $this->controller->getProfile()->getId());
             $this->form->addField(new \Tk\Form\Field\Html($companyStr . ' Rating', 'Please rate your experience with this ' . strtolower($companyStr)))
-                ->setFieldset($companyStr . ' Report');
+                ->setFieldset($companyStr . ' ' . $reportLabel);
             foreach ($this->questionList as $question) {
                 $name = 'sr-' . $question->id;
-                $this->form->addField(new \Rate\Form\Field\StarRating($name))->setFieldset($companyStr . ' Report')->
+                $this->form->addField(new \Rate\Form\Field\StarRating($name))->setFieldset($companyStr . ' ' . $reportLabel)->
                     setLabel($question->text)->setNotes($question->help);
             }
         }
