@@ -51,7 +51,7 @@ class Manager extends AdminManagerIface
         $this->editUrl = \App\Uri::createHomeUrl('/ratingQuestionEdit.html');
 
         $u = clone $this->editUrl;
-        $this->getActionPanel()->addButton(\Tk\Ui\Button::create('New Question',
+        $this->getActionPanel()->add(\Tk\Ui\Button::create('New Question',
             $u->set('profileId', $this->profile->getId()), 'fa fa-star fa-add-action'));
 
         $this->table = \App\Config::getInstance()->createTable(\Tk\Object::basename($this).'_questionList');
