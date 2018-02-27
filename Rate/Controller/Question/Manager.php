@@ -80,7 +80,7 @@ class Manager extends AdminManagerIface
     {
         $filter = $this->table->getFilterValues();
         $filter['profileId'] = $this->profile->getId();
-        return \Rate\Db\QuestionMap::create()->findFiltered($filter, $this->table->makeDbTool());
+        return \Rate\Db\QuestionMap::create()->findFiltered($filter, $this->table->getTool());
     }
 
     /**
