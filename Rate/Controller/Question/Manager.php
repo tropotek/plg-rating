@@ -40,6 +40,8 @@ class Manager extends AdminManagerIface
 
     /**
      * @param Request $request
+     * @throws \Exception
+     * @throws \Tk\Db\Exception
      * @throws \Tk\Form\Exception
      */
     public function doDefault(Request $request)
@@ -75,6 +77,7 @@ class Manager extends AdminManagerIface
 
     /**
      * @return \Rate\Db\Question[]|\Tk\Db\Map\ArrayObject
+     * @throws \Exception
      */
     protected function getList()
     {

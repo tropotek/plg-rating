@@ -77,6 +77,7 @@ class Question extends \Tk\Db\Map\Model
 
     /**
      * @return \App\Db\Profile|null|\Tk\Db\Map\Model|\Tk\Db\ModelInterface
+     * @throws \Tk\Db\Exception
      */
     public function getProfile()
     {
