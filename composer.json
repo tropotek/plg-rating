@@ -1,5 +1,5 @@
 {
-    "name": "ttek-plg/ems-rating",
+    "name": "ttek-plg/plg-rating",
     "type": "ttek-plugin",
     "description": "EMS III Company Star Rating plugin",
     "keywords":  [
@@ -27,10 +27,12 @@
     },
     "extra":  {
         "branch-alias":  {
-            "dev-master": "1.0.x-dev"
+            "dev-master": "2.0.x-dev"
         }
     },
     "require":  {
+        "ttek/tk-framework": "~2.0",
+        "ttek/tk-uni": "~2.0",
         "ttek/tk-installers": "~2.0",
         "kartik-v/bootstrap-star-rating": "~2.0"
     }
