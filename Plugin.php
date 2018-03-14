@@ -16,7 +16,7 @@ class Plugin extends \App\Plugin\Iface
      */
     static function getInstance()
     {
-        return \Tk\Config::getInstance()->getPluginFactory()->getPlugin('ems-rating');
+        return \Tk\Config::getInstance()->getPluginFactory()->getPlugin('plg-rating');
     }
 
     /**
