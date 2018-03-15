@@ -31,18 +31,18 @@ class SetupHandler implements Subscriber
 //            $dispatcher->addSubscriber(new \Ems\Listener\ExampleHandler(Plugin::ZONE_INSTITUTION, $institution->getId()));
 //        }
 
-//        $course = \Uni\Config::getInstance()->getCourse();
-//        if ($course && $plugin->isZonePluginEnabled(Plugin::ZONE_COURSE, $course->getId())) {
-//            \Tk\Log::debug($plugin->getName() . ': Sample init course plugin stuff: ' . $course->name);
-//            $dispatcher->addSubscriber(new \Ems\Listener\ExampleHandler(Plugin::ZONE_COURSE, $course->getId()));
+//        $subject = \Uni\Config::getInstance()->getSubject();
+//        if ($subject && $plugin->isZonePluginEnabled(Plugin::ZONE_SUBJECT, $subject->getId())) {
+//            \Tk\Log::debug($plugin->getName() . ': Sample init subject plugin stuff: ' . $subject->name);
+//            $dispatcher->addSubscriber(new \Ems\Listener\ExampleHandler(Plugin::ZONE_SUBJECT, $subject->getId()));
 //        }
 
         $profile = \App\Config::getInstance()->getProfile();
-        if ($profile && $plugin->isZonePluginEnabled(Plugin::ZONE_COURSE_PROFILE, $profile->getId())) {
-            //\Tk\Log::debug($plugin->getName() . ': Rating init course profile plugin stuff: ' . $profile->name);
+        if ($profile && $plugin->isZonePluginEnabled(Plugin::ZONE_SUBJECT_PROFILE, $profile->getId())) {
+            //\Tk\Log::debug($plugin->getName() . ': Rating init subject profile plugin stuff: ' . $profile->name);
             $dispatcher->addSubscriber(new \Rate\Listener\ProfileEditHandler());
 
-            if (\Uni\Config::getInstance()->getCourse()) {
+            if (\Uni\Config::getInstance()->getSubject()) {
                 $dispatcher->addSubscriber(new \Rate\Listener\CompanyViewHandler());
                 $dispatcher->addSubscriber(new \Rate\Listener\CompanyEditHandler());
                 $dispatcher->addSubscriber(new \Rate\Listener\PlacementReportEditHandler());

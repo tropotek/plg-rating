@@ -135,11 +135,11 @@ class ValueMap extends \App\Db\Mapper
         }
 
 
-        if (!empty($filter['courseId']) || !empty($filter['companyId'])) {
+        if (!empty($filter['subjectId']) || !empty($filter['companyId'])) {
             $from .= sprintf(', %s c', $this->quoteTable('placement'));
             $where .= sprintf('a.placement_id = c.id AND ');
-            if (!empty($filter['courseId'])) {
-                $where .= sprintf('c.course_id = %s AND ', (int)$filter['courseId']);
+            if (!empty($filter['subjectId'])) {
+                $where .= sprintf('c.subject_id = %s AND ', (int)$filter['subjectId']);
             }
             if (!empty($filter['companyId'])) {
                 $where .= sprintf('c.company_id = %s AND ', (int)$filter['companyId']);

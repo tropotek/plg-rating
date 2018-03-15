@@ -57,7 +57,7 @@ class CompanyViewHandler implements Subscriber
                     $value = (float)\Rate\Db\ValueMap::create()->findAverage(array('companyId' => $obj->getPlacement()->companyId, 'placementId' => $obj->placementId));
                     if (!$value) return '';
                     return sprintf('<div class="rate-star-rating"><em>%s</em><br/>%s</div>',
-                        \App\Db\Phrase::findValue('star-rating', $obj->getPlacement()->getCourse()->profileId), \Rate\Ui\Stars::create($value, true));
+                        \App\Db\Phrase::findValue('star-rating', $obj->getPlacement()->getSubject()->profileId), \Rate\Ui\Stars::create($value, true));
                 }
             );
     }

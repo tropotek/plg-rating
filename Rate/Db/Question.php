@@ -59,7 +59,7 @@ class Question extends \Tk\Db\Map\Model
 
 
     /**
-     * Course constructor.
+     * constructor.
      */
     public function __construct()
     {
