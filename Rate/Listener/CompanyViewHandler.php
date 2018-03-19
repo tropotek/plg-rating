@@ -22,6 +22,9 @@ class CompanyViewHandler implements Subscriber
      * Check the user has access to this controller
      *
      * @param \Tk\Event\Event $event
+     * @throws \Dom\Exception
+     * @throws \ReflectionException
+     * @throws \Tk\Db\Exception
      */
     public function onControllerInit(\Tk\Event\Event $event)
     {
@@ -64,6 +67,8 @@ class CompanyViewHandler implements Subscriber
 
     /**
      * @param \App\Controller\Company\View $controller
+     * @throws \Dom\Exception
+     * @throws \Tk\Db\Exception
      */
     protected function showCompanyRatings($controller)
     {
@@ -95,6 +100,8 @@ HTML;
 
     /**
      * @param \App\Controller\Company\View $controller
+     * @throws \Dom\Exception
+     * @throws \Tk\Db\Exception
      */
     protected function showCompanyRatingTotal($controller)
     {

@@ -30,6 +30,8 @@ class PlacementReportEditHandler implements Subscriber
 
     /**
      * @param \Tk\Event\FormEvent $event
+     * @throws \Tk\Db\Exception
+     * @throws \Tk\Exception
      */
     public function onFormPreInit(\Tk\Event\FormEvent $event)
     {
@@ -46,6 +48,8 @@ class PlacementReportEditHandler implements Subscriber
 
     /**
      * @param \Tk\Event\FormEvent $event
+     * @throws \Tk\Db\Exception
+     * @throws \Tk\Exception
      * @throws \Tk\Form\Exception
      */
     public function onFormInit(\Tk\Event\FormEvent $event)
@@ -81,6 +85,7 @@ class PlacementReportEditHandler implements Subscriber
 
     /**
      * @param \Tk\Event\FormEvent $event
+     * @throws \Tk\Db\Exception
      */
     public function onFormSubmit(\Tk\Event\FormEvent $event)
     {

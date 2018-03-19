@@ -18,6 +18,8 @@ class ValueMap extends \App\Db\Mapper
      * Mapper constructor.
      *
      * @param \Tk\Db\Pdo|null $db
+     * @throws \Exception
+     * @throws \Tk\Db\Exception
      */
     public function __construct($db = null)
     {
@@ -27,6 +29,7 @@ class ValueMap extends \App\Db\Mapper
 
     /**
      * @return \Tk\DataMap\DataMap
+     * @throws \Tk\Db\Exception
      */
     public function getDbMap()
     {
@@ -64,6 +67,7 @@ class ValueMap extends \App\Db\Mapper
      *
      * @param $placementId
      * @return $this
+     * @throws \Tk\Db\Exception
      */
     public function removeAllByPlacementId($placementId)
     {
@@ -78,6 +82,7 @@ class ValueMap extends \App\Db\Mapper
      * @param $questionId
      * @param $placementId
      * @return Value
+     * @throws \Tk\Db\Exception
      */
     public function findValue($questionId, $placementId)
     {
@@ -90,6 +95,7 @@ class ValueMap extends \App\Db\Mapper
      * @param array $filter
      * @param Tool $tool
      * @return ArrayObject|Value[]
+     * @throws \Tk\Db\Exception
      */
     public function findFiltered($filter = array(), $tool = null)
     {
