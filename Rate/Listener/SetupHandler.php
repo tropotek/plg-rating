@@ -6,7 +6,7 @@ use Rate\Plugin;
 
 /**
  * @author Michael Mifsud <info@tropotek.com>
- * @link http://www.tropotek.com/
+ * @see http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
  */
 class SetupHandler implements Subscriber
@@ -48,6 +48,8 @@ class SetupHandler implements Subscriber
                 $dispatcher->addSubscriber(new \Rate\Listener\PlacementReportEditHandler());
             }
         }
+
+        $dispatcher->addSubscriber(new \Rate\Listener\StatusMailHandler());
 
     }
 
