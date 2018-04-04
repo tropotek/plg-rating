@@ -36,41 +36,47 @@ class StatusMailHandler implements Subscriber
             $value = (float)\Rate\Db\ValueMap::create()->findAverage(array('companyId' => $company->getId()));
             $message->set('company::starRating', $value);
 
+            $questionRatings = '';
+            $questionList = \Rate\Db\QuestionMap::create()->findFiltered(array('profileId' => $message->get('profile::id')));
+            foreach ($questionList as $q) {
+                $ratingsList = \Rate\Db\ValueMap::create()->findFiltered(array('companyId' => $company->id, 'questionId' => $q->id));
+                $cnt = $ratingsList->count();
+                $tot = 0;
+                $rating = '';
 
+                if ($cnt) {
+                    foreach ($ratingsList as $v) {
+                        $tot += (int)$v->value;
+                    }
+                    $r = round($tot / $cnt, 2);
+                    $rating = sprintf('%.2f', $r);
+                }
 
-
-
+                $questionRatings .= sprintf('<li>%s [Rating: %s / 5.00]</li>', $q->text, $rating);
+            }
+            if ($questionRatings) {
+                $questionRatings = '<ol>' . $questionRatings . '</ol>';
+            }
+            $message->set('company::questionRatings', $questionRatings);
         }
 
-//
-//
-//        $mailTemplateList = \App\Db\MailTemplateMap::create()->findFiltered(
-//            array('profileId' => $event->getStatus()->profileId, 'event' => $event->getStatus()->event));
-//
-//        /** @var \App\Db\MailTemplate $mailTemplate */
-//        foreach ($mailTemplateList as $mailTemplate) {
-//            $modelStrategy = $event->getStatus()->getModelStrategy();
-//            if (!$modelStrategy) {
-//                \Tk\Log::warning('onSendStatusMessage: Strategy Not Found For: ' . $event->getStatus()->fkey);
-//                continue;
-//            }
-//
-//            $message = $modelStrategy->makeStatusMessage($event->getStatus(), $mailTemplate);
-//
-//            // Save the message for sending
-//            if ($message instanceof \Tk\Mail\Message) {
-//                \App\Util\StatusMessage::setStatus($message, $event->getStatus());
-//                \App\Util\StatusMessage::setProfile($message, $event->getStatus()->getProfile());
-//                \App\Util\StatusMessage::setSubject($message, $event->getStatus()->getSubject());
-//                \App\Util\StatusMessage::setRecipient($message, $mailTemplate->recipient);
-//
-//                if ($message->hasRecipient()) {
-//                    $event->addMessage($message);
-//                }
-//            }
-//        }
     }
 
+    /**
+     * @param \App\Event\PlacementReportEvent $event
+     * @throws \Tk\Db\Exception
+     */
+    public function onCommentReport(\App\Event\PlacementReportEvent $event)
+    {
+        $report = $event->getPlacementReport();
+
+        $val = \Rate\Db\Value::getCompanyRating($report->getPlacement()->companyId, $report->placementId);
+        if ($val !== null) {
+            $html = sprintf('<p><small>Rating: %.2f / 5.00</small></p>', $val);
+            $event->set('postHtml', $html);
+        }
+
+    }
 
     /**
      * @return array
@@ -78,7 +84,8 @@ class StatusMailHandler implements Subscriber
     public static function getSubscribedEvents()
     {
         return array(
-            \App\StatusEvents::STATUS_CHANGE => array('onSendStatusMessage', 0)
+            \App\StatusEvents::STATUS_CHANGE => array('onSendStatusMessage', 0),
+            \App\AppEvents::COMPANY_COMMENT_REPORT => array('onCommentReport', 0)
         );
     }
 

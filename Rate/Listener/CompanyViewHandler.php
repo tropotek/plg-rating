@@ -30,13 +30,13 @@ class CompanyViewHandler implements Subscriber
     {
         /** @var \Tk\Controller\Iface $controller */
         $this->controller = $event->get('controller');
-        if ($this->controller instanceof \App\Controller\Company\View) {
+        if ($this->controller instanceof \App\Controller\Company\View || $this->controller instanceof \App\Controller\Company\CommentReport) {
             if ($this->controller->getUser()->isStaff() || $this->controller->getUser()->isStudent()) {
                 $template = $this->controller->getTemplate();
                 $template->appendCssUrl(\Tk\Uri::create(Plugin::getInstance()->getPluginPath().'/assets/rating.less'));
 
                 // TODO: Make these a configurable option in the profile plugin settings
-                //$this->showCompanyRatings($this->controller);
+                $this->showCompanyRatings($this->controller);
                 $this->showCompanyRatingTotal($this->controller);
                 $this->showCommentsRating($this->controller);
             }
@@ -65,6 +65,7 @@ class CompanyViewHandler implements Subscriber
             );
     }
 
+
     /**
      * @param \App\Controller\Company\View $controller
      * @throws \Dom\Exception
@@ -86,15 +87,14 @@ class CompanyViewHandler implements Subscriber
         if ($html) {
             $tpl = <<<HTML
 <section class="companyRating">
-  <h5 class="content-title">%s</h5>
-  <ul class="star-rating-list">
+  <h4 class="content-title">%s</h4>
+  <ol class="star-rating-list">
     %s
-  </ul>
+  </ol>
 </section>
 HTML;
-
             $html = sprintf($tpl, \App\Db\Phrase::findValue('star-rating', $company->profileId), $html);
-            $template->appendHtml('right-col', $html);
+            $template->appendHtml('content', $html);
         }
     }
 
@@ -110,8 +110,12 @@ HTML;
 
         // Company Profile Total
         $value = (float)\Rate\Db\ValueMap::create()->findAverage(array('companyId' => $company->getId()));
-        $html = sprintf('<div class="rate-star-rating pull-right"><em>%s</em><br/>%s</div>',
-            \App\Db\Phrase::findValue('company-view-star-rating', $company->profileId), \Rate\Ui\Stars::create($value, true));
+//        $html = sprintf('<div class="rate-star-rating pull-right text-center"><em>%s</em><br/>%s</div>',
+//            \App\Db\Phrase::findValue('company-view-star-rating', $company->profileId), \Rate\Ui\Stars::create($value, true));
+
+        $html = sprintf('<div class="rate-star-rating pull-right text-center" title="%s">%s</div>',
+            htmlentities(\App\Db\Phrase::findValue('company-view-star-rating', $company->profileId)), \Rate\Ui\Stars::create($value, true));
+
         $template->appendHtml('top-col-right', $html);
     }
 

@@ -109,6 +109,36 @@ class Value extends \Tk\Db\Map\Model
         return $this->placement;
     }
 
+
+    /**
+     * If a $placementId is supplied then total rating will be for that placement only
+     *
+     * @param int $companyId
+     * @param int $placementId
+     * @return int|null Null is returned when there have been no rating values logged
+     * @throws \Tk\Db\Exception
+     */
+    public static function getCompanyRating($companyId, $placementId = 0)
+    {
+        $filter = array(
+            'companyId' => $companyId
+        );
+        if ($placementId) {
+            $filter['placementId'] = $placementId;
+        }
+        $list = ValueMap::create()->findFiltered($filter);
+        if (!count($list)) return null;
+
+        $cnt = 0;
+        $tot = 0;
+        foreach($list as $i => $r) {
+            //if (!$r->getQuestion()->total) continue;
+            $cnt++;
+            $tot += (int)$r->value;
+        }
+        return round(($tot/$cnt), 2);
+    }
+
     /**
      * @return array
      */

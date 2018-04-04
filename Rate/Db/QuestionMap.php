@@ -54,8 +54,6 @@ class QuestionMap extends \App\Db\Mapper
     }
 
     /**
-     * Find filtered records
-     *
      * @param array $filter
      * @param Tool $tool
      * @return ArrayObject|Question[]
@@ -64,7 +62,6 @@ class QuestionMap extends \App\Db\Mapper
     public function findFiltered($filter = array(), $tool = null)
     {
         if (!$tool) $tool = \Tk\Db\Tool::create('orderBy');
-
         list($from, $where) = $this->processFilter($filter);
         $r = $this->selectFrom($from, $where, $tool);
         return $r;

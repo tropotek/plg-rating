@@ -14,9 +14,8 @@ use Tk\DataMap\Form;
  */
 class ValueMap extends \App\Db\Mapper
 {
+
     /**
-     * Mapper constructor.
-     *
      * @param \Tk\Db\Pdo|null $db
      * @throws \Exception
      * @throws \Tk\Db\Exception
@@ -139,7 +138,6 @@ class ValueMap extends \App\Db\Mapper
             $where .= sprintf('a.question_id = b.id AND ');
             $where .= sprintf('b.profile_id = %s AND ', (int)$filter['profileId']);
         }
-
 
         if (!empty($filter['subjectId']) || !empty($filter['companyId'])) {
             $from .= sprintf(', %s c', $this->quoteTable('placement'));
