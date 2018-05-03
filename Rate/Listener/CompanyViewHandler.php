@@ -25,6 +25,7 @@ class CompanyViewHandler implements Subscriber
      * @throws \Dom\Exception
      * @throws \ReflectionException
      * @throws \Tk\Db\Exception
+     * @throws \Tk\Exception
      */
     public function onControllerInit(\Tk\Event\Event $event)
     {
@@ -70,6 +71,7 @@ class CompanyViewHandler implements Subscriber
      * @param \App\Controller\Company\View $controller
      * @throws \Dom\Exception
      * @throws \Tk\Db\Exception
+     * @throws \Tk\Exception
      */
     protected function showCompanyRatings($controller)
     {
@@ -94,7 +96,7 @@ class CompanyViewHandler implements Subscriber
 </section>
 HTML;
             $html = sprintf($tpl, \App\Db\Phrase::findValue('star-rating', $company->profileId), $html);
-            $template->appendHtml('content', $html);
+            $template->appendHtml('right-col', $html);
         }
     }
 
@@ -102,6 +104,7 @@ HTML;
      * @param \App\Controller\Company\View $controller
      * @throws \Dom\Exception
      * @throws \Tk\Db\Exception
+     * @throws \Tk\Exception
      */
     protected function showCompanyRatingTotal($controller)
     {
@@ -110,6 +113,7 @@ HTML;
 
         // Company Profile Total
         $value = (float)\Rate\Db\ValueMap::create()->findAverage(array('companyId' => $company->getId()));
+
 //        $html = sprintf('<div class="rate-star-rating pull-right text-center"><em>%s</em><br/>%s</div>',
 //            \App\Db\Phrase::findValue('company-view-star-rating', $company->profileId), \Rate\Ui\Stars::create($value, true));
 
@@ -118,7 +122,6 @@ HTML;
 
         $template->appendHtml('top-col-right', $html);
     }
-
 
 
 
