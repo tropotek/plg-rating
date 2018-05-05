@@ -9,7 +9,7 @@ use Rate\Plugin;
  * @see http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
  */
-class PlacementReportViewHandler implements Subscriber
+class PlacementViewHandler implements Subscriber
 {
 
     /**
@@ -32,6 +32,7 @@ class PlacementReportViewHandler implements Subscriber
         if ($controller instanceof \App\Controller\Student\Placement\View) {
             $this->controller = $controller;
             $view = $this->controller->getReportView();
+            if (!$view) return;
             $template = $view->getTemplate();
             $report = $view->getReport();
             $placement = $report->getPlacement();

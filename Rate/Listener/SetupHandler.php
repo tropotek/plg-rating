@@ -46,7 +46,7 @@ class SetupHandler implements Subscriber
                 $dispatcher->addSubscriber(new \Rate\Listener\CompanyViewHandler());
                 $dispatcher->addSubscriber(new \Rate\Listener\CompanyEditHandler());
                 $dispatcher->addSubscriber(new \Rate\Listener\PlacementReportEditHandler());
-                $dispatcher->addSubscriber(new \Rate\Listener\PlacementReportViewHandler());
+                $dispatcher->addSubscriber(new \Rate\Listener\PlacementViewHandler());
             }
         }
 
