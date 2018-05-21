@@ -54,7 +54,7 @@ class PlacementReportEditHandler implements Subscriber
      */
     public function onFormInit(\Tk\Event\FormEvent $event)
     {
-        if ($this->form) {
+        if ($this->form && count($this->questionList)) {
             $reportLabel = \App\Db\Phrase::findValue('report', $this->controller->getProfile()->getId());
             $companyStr = \App\Db\Phrase::findValue('company', $this->controller->getProfile()->getId());
             $this->form->addField(new \Tk\Form\Field\Html($companyStr . ' Rating', 'Please rate your experience with this ' . strtolower($companyStr)))
@@ -73,7 +73,7 @@ class PlacementReportEditHandler implements Subscriber
      */
     public function onFormLoad(\Tk\Event\FormEvent $event)
     {
-        if ($this->form) {
+        if ($this->form && count($this->questionList)) {
             foreach ($this->questionList as $question) {
                 $name = 'sr-' . $question->id;
                 $value = \Rate\Db\ValueMap::create()->findValue($question->getId(), $this->controller->getPlacement()->getId());
@@ -89,7 +89,7 @@ class PlacementReportEditHandler implements Subscriber
      */
     public function onFormSubmit(\Tk\Event\FormEvent $event)
     {
-        if ($this->form) {
+        if ($this->form && count($this->questionList)) {
             $placement = $this->controller->getPlacement();
 
             // Validate star ratings
