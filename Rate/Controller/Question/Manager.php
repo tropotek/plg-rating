@@ -56,7 +56,7 @@ class Manager extends AdminManagerIface
         $this->getActionPanel()->add(\Tk\Ui\Button::create('New Question',
             $u->set('profileId', $this->profile->getId()), 'fa fa-star fa-add-action'));
 
-        $this->table = \App\Config::getInstance()->createTable(\Tk\Object::basename($this).'_questionList');
+        $this->table = \App\Config::getInstance()->createTable(\Tk\ObjectUtil::basename($this).'_questionList');
         $this->table->setRenderer(\App\Config::getInstance()->createTableRenderer($this->table));
 
         $this->table->addCell(new \Tk\Table\Cell\Checkbox('id'));
