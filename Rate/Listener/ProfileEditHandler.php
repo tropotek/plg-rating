@@ -29,7 +29,7 @@ class ProfileEditHandler implements Subscriber
             if ($controller->getUser()->isStaff() && $controller->getProfile()) {
                 /** @var \Tk\Ui\Admin\ActionPanel $actionPanel */
                 $actionPanel = $controller->getActionPanel();
-                $actionPanel->addButton(\Tk\Ui\Button::create('Rating Questions',
+                $actionPanel->add(\Tk\Ui\Button::create('Rating Questions',
                     \App\Uri::createHomeUrl('/ratingQuestionManager.html')->set('profileId', $controller->getProfile()->getId()), 'fa fa-star'));
             }
         }
