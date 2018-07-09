@@ -13,6 +13,7 @@ class Plugin extends \App\Plugin\Iface
      * A helper method to get the Plugin instance globally
      *
      * @return static
+     * @throws \Tk\Exception
      */
     static function getInstance()
     {

@@ -25,6 +25,7 @@ class CompanyEditHandler implements Subscriber
      * @throws \Dom\Exception
      * @throws \ReflectionException
      * @throws \Tk\Db\Exception
+     * @throws \Tk\Exception
      */
     public function onControllerInit(\Tk\Event\Event $event)
     {

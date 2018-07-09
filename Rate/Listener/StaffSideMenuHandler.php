@@ -33,7 +33,6 @@ class StaffSideMenuHandler implements Subscriber
         }
     }
 
-
     /**
      * Check the user has access to this controller
      *

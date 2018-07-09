@@ -1,7 +1,6 @@
 <?php
 namespace Rate\Listener;
 
-use Dom\Exception;
 use Tk\Event\Subscriber;
 
 
@@ -13,7 +12,6 @@ use Tk\Event\Subscriber;
  */
 class StatusMailHandler implements Subscriber
 {
-
 
     /**
      * @param \App\Event\StatusEvent $event

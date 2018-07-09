@@ -5,8 +5,6 @@ use Tk\Event\Subscriber;
 use Rate\Plugin;
 
 /**
- * Class StartupHandler
- *
  * @author Michael Mifsud <info@tropotek.com>
  * @see http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
@@ -34,7 +32,6 @@ class ProfileEditHandler implements Subscriber
             }
         }
     }
-
 
     /**
      * Check the user has access to this controller

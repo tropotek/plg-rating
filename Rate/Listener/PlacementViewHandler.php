@@ -44,7 +44,6 @@ class PlacementViewHandler implements Subscriber
             $view = \Rate\Ui\RatingListView::create($list);
             $template->appendHtml('report-info',
                 sprintf('<dt>%s:</dt> <dd>%s</dd>', $ratingStr, $view->show()->toString()));
-
         }
     }
 
