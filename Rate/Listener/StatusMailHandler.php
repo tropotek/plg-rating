@@ -27,7 +27,6 @@ class StatusMailHandler implements Subscriber
 
         /** @var \Tk\Mail\CurlyMessage $message */
         foreach ($event->getMessageList() as $message) {
-
             if (!\Rate\Plugin::getInstance()->isProfileActive($message->get('profile::id'))) return;
 
             /** @var \App\Db\Company $company */
