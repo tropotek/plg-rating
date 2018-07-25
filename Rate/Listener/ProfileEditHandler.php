@@ -24,6 +24,7 @@ class ProfileEditHandler implements Subscriber
         /** @var \Tk\Controller\Iface $controller */
         $controller = $event->get('controller');
         if ($controller instanceof \App\Controller\Profile\Edit) {
+            if (!\Rate\Plugin::getInstance()->isZonePluginEnabled(\Rate\Plugin::ZONE_SUBJECT_PROFILE, $controller->getProfile()->getId())) return;
             if ($controller->getUser()->isStaff() && $controller->getProfile()) {
                 /** @var \Tk\Ui\Admin\ActionPanel $actionPanel */
                 $actionPanel = $controller->getActionPanel();

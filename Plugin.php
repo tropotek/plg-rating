@@ -73,5 +73,14 @@ class Plugin extends \App\Plugin\Iface
 
     }
 
+    function isProfileActive($profileId)
+    {
+        $b = $this->isZonePluginEnabled(\Rate\Plugin::ZONE_SUBJECT_PROFILE, $profileId);
+        if (!\Rate\Db\QuestionMap::create()->findFiltered(array('profileId' => $profileId))->count()) {
+            $b = false;
+        }
+        return $b;
+    }
+
 
 }

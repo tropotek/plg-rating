@@ -32,6 +32,7 @@ class CompanyEditHandler implements Subscriber
         /** @var \Tk\Controller\Iface $controller */
         $this->controller = $event->get('controller');
         if ($this->controller instanceof \App\Controller\Company\Edit) {
+            if (!\Rate\Plugin::getInstance()->isProfileActive($this->controller->getProfile()->getId())) return;
             if ($this->controller->getUser()->isStaff()) {
                 $template = $this->controller->getTemplate();
                 $company = $this->controller->getCompany();

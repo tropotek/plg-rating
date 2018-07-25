@@ -20,10 +20,7 @@ class PlacementViewHandler implements Subscriber
 
     /**
      * @param \Tk\Event\Event $event
-     * @throws \Dom\Exception
-     * @throws \ReflectionException
-     * @throws \Tk\Db\Exception
-     * @throws \Tk\Exception
+     * @throws \Exception
      */
     public function onControllerInit(\Tk\Event\Event $event)
     {
@@ -36,6 +33,9 @@ class PlacementViewHandler implements Subscriber
             $template = $view->getTemplate();
             $report = $view->getReport();
             $placement = $report->getPlacement();
+            if (!\Rate\Plugin::getInstance()->isProfileActive($placement->getSubject()->profileId)) {
+                return;
+            }
             $ratingStr = \App\Db\Phrase::findValue('star-rating', $placement->getSubject()->profileId);
 
             $template->appendCssUrl(\Tk\Uri::create(Plugin::getInstance()->getPluginPath().'/assets/rating.less'));

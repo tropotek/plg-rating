@@ -15,7 +15,7 @@ class StatusMailHandler implements Subscriber
 
     /**
      * @param \App\Event\StatusEvent $event
-     * @throws \Tk\Db\Exception
+     * @throws \Exception
      */
     public function onSendStatusMessage(\App\Event\StatusEvent $event)
     {
@@ -27,6 +27,9 @@ class StatusMailHandler implements Subscriber
 
         /** @var \Tk\Mail\CurlyMessage $message */
         foreach ($event->getMessageList() as $message) {
+
+            if (!\Rate\Plugin::getInstance()->isProfileActive($message->get('profile::id'))) return;
+
             /** @var \App\Db\Company $company */
             $company = \App\Db\CompanyMap::create()->find($message->get('company::id'));
             if(!$company) continue;
@@ -62,18 +65,18 @@ class StatusMailHandler implements Subscriber
 
     /**
      * @param \App\Event\PlacementReportEvent $event
-     * @throws \Tk\Db\Exception
+     * @throws \Exception
      */
     public function onCommentReport(\App\Event\PlacementReportEvent $event)
     {
         $report = $event->getPlacementReport();
+        if (!\Rate\Plugin::getInstance()->isProfileActive($report->getPlacement()->getSubject()->profileId)) return;
 
         $val = \Rate\Db\Value::getCompanyRating($report->getPlacement()->companyId, $report->placementId);
         if ($val !== null) {
             $html = sprintf('<p><small>Rating: %.2f / 5.00</small></p>', $val);
             $event->set('postHtml', $html);
         }
-
     }
 
     /**
