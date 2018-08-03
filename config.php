@@ -9,7 +9,7 @@ if ($composer)
 $routes = $config->getRouteCollection();
 if (!$routes) return;
 
-$params = array('role' => 'staff');
+$params = array();
 
 $routes->add('Rating Question Manager', new \Tk\Routing\Route('/staff/ratingQuestionManager.html', 'Rate\Controller\Question\Manager::doDefault', $params));
 $routes->add('Rating Question Edit', new \Tk\Routing\Route('/staff/ratingQuestionEdit.html', 'Rate\Controller\Question\Edit::doDefault', $params));

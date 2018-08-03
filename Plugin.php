@@ -12,12 +12,12 @@ class Plugin extends \App\Plugin\Iface
     /**
      * A helper method to get the Plugin instance globally
      *
-     * @return static
-     * @throws \Tk\Exception
+     * @return Plugin|\Tk\Plugin\Iface
+     * @throws \Exception
      */
     static function getInstance()
     {
-        return \Tk\Config::getInstance()->getPluginFactory()->getPlugin('plg-rating');
+        return \Uni\Config::getInstance()->getPluginFactory()->getPlugin('plg-rating');
     }
 
     /**
@@ -45,8 +45,6 @@ class Plugin extends \App\Plugin\Iface
      * plugin control panel
      *
      * @throws \Exception
-     * @throws \Tk\Db\Exception
-     * @throws \Tk\Exception
      */
     function doActivate()
     {
@@ -73,6 +71,11 @@ class Plugin extends \App\Plugin\Iface
 
     }
 
+    /**
+     * @param $profileId
+     * @return bool
+     * @throws \Exception
+     */
     function isProfileActive($profileId)
     {
         $b = $this->isZonePluginEnabled(\Rate\Plugin::ZONE_SUBJECT_PROFILE, $profileId);
