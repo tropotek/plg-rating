@@ -63,7 +63,7 @@ class Edit extends \App\Controller\AdminEditIface
 
         $this->form->addField(new Field\Input('text'));
         $this->form->addField(new Field\Input('help'));
-        $this->form->addField(new Field\Checkbox('total'))->setNotes('Add this questions values to the ' .
+        $this->form->addField(new Field\Checkbox('total'))->setCheckboxLabel('Add this questions values to the ' .
             \App\Db\Phrase::findValue('company', $this->question->profileId) . ' total rating calculations.');
 
         $this->form->addField(new Event\Submit('update', array($this, 'doSubmit')));
