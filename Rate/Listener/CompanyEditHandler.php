@@ -22,10 +22,7 @@ class CompanyEditHandler implements Subscriber
      * Check the user has access to this controller
      *
      * @param \Tk\Event\Event $event
-     * @throws \Dom\Exception
-     * @throws \ReflectionException
-     * @throws \Tk\Db\Exception
-     * @throws \Tk\Exception
+     * @throws \Exception
      */
     public function onControllerInit(\Tk\Event\Event $event)
     {

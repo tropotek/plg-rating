@@ -2,6 +2,7 @@
 namespace Rate\Listener;
 
 use Tk\Event\Subscriber;
+use Symfony\Component\HttpKernel\KernelEvents;
 use Rate\Plugin;
 
 /**
@@ -13,11 +14,10 @@ class SetupHandler implements Subscriber
 {
 
     /**
-     * @param \Tk\Event\GetResponseEvent $event
-     * @throws \Tk\Db\Exception
-     * @throws \Tk\Exception
+     * @param \Symfony\Component\HttpKernel\Event\RequestEvent $event
+     * @throws \Exception
      */
-    public function onRequest(\Tk\Event\GetResponseEvent $event)
+    public function onRequest(\Symfony\Component\HttpKernel\Event\RequestEvent $event)
     {
         /* NOTE:
          *  If you require the Institution object for an event
@@ -57,18 +57,6 @@ class SetupHandler implements Subscriber
         $dispatcher->addSubscriber(new \Rate\Listener\StatusMailHandler());
 
     }
-
-
-
-    public function onInit(\Tk\Event\KernelEvent $event)
-    {
-        //vd('onInit');
-    }
-
-    public function onController(\Tk\Event\ControllerEvent $event)
-    {
-        //vd('onController');
-    }
     
 
     /**
@@ -94,9 +82,7 @@ class SetupHandler implements Subscriber
     public static function getSubscribedEvents()
     {
         return array(
-            //\Tk\Kernel\KernelEvents::INIT => array('onInit', 0),
-            //\Tk\Kernel\KernelEvents::CONTROLLER => array('onController', 0),
-            \Tk\Kernel\KernelEvents::REQUEST => array('onRequest', -10)
+            KernelEvents::REQUEST => array('onRequest', -10)
         );
     }
     
