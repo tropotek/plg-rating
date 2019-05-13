@@ -1,19 +1,18 @@
 {
     "name": "ttek-plg/plg-rating",
     "type": "ttek-plugin",
-    "description": "EMS III Company Star Rating plugin",
+    "description": "EMS Company Star Rating plugin",
     "keywords":  [
         "tropotek",
         "plugin",
-        "EMS III",
+        "EMS",
         "star",
         "rating"
     ],
-    "homepage": "http://www.tropotek.com/",
-    "time": "2017-11-14",
-    "access": "admin, profile",
+    "time": "2019-05-13",
     "license": "MIT",
-    "version": "1.0.0",
+    "version": "3.0.0",
+    "access": "admin, profile",
     "authors":  [
          {
             "name": "Michael Mifsud",
@@ -27,13 +26,10 @@
     },
     "extra":  {
         "branch-alias":  {
-            "dev-master": "2.0.x-dev"
+            "dev-master": "3.0.x-dev"
         }
     },
     "require":  {
-        "ttek/tk-framework": "~2.0",
-        "ttek/tk-uni": "~2.0",
-        "ttek/tk-installers": "~2.0",
         "kartik-v/bootstrap-star-rating": "~2.0"
     }
 }
