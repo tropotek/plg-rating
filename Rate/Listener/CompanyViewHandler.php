@@ -47,7 +47,7 @@ class CompanyViewHandler implements Subscriber
      */
     protected function showCommentsRating($controller)
     {
-        /** @var \App\Table\CompanyCommentMin $commentTable */
+        /** @var \App\Table\CompanyComments $commentTable */
         $commentTable = $controller->getCommentTable();
 
         $commentTable->prependCell(new \Tk\Table\Cell\Text('rating'), 'title')
@@ -59,7 +59,8 @@ class CompanyViewHandler implements Subscriber
                     $value = (float)\Rate\Db\ValueMap::create()->findAverage(array('companyId' => $obj->getPlacement()->companyId, 'placementId' => $obj->placementId));
                     if (!$value) return '';
                     return sprintf('<div class="rate-star-rating"><em>%s</em><br/>%s</div>',
-                        \App\Db\Phrase::findValue('star-rating', $obj->getPlacement()->getSubjectObj()->profileId), \Rate\Ui\Stars::create($value, true));
+                        \App\Db\Phrase::findValue('star-rating', $obj->getPlacement()->getSubject()->getProfileId()),
+                        \Rate\Ui\Stars::create($value, true));
                 }
             );
     }
