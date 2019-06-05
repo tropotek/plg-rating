@@ -1,32 +1,48 @@
-
 @import "starRating";
 
 
-  // Company View total rating box
-  .rate-star-rating {
-    text-align: center;
-    em {
-      font-weight: 600;
-    }
-  }
+// Company View total rating box
+.rate-star-rating {
+  text-align: center;
 
-  // Company View star rating list
-  .star-rating-list {
+  em {
+    font-weight: 600;
+  }
+}
+
+// Company View star rating list
+.star-rating-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  li {
     list-style: none;
-    margin: 0;
-    padding: 0;
-    li {
-      list-style: none;
-      margin: 0 0 10px 0;
-      padding: 0 0 5px 0;
-      font-size: 1em;
-      border-bottom: 1px solid #eee;
-      > span {
+    margin: 0 0 10px 0;
+    padding: 0 0 5px 0;
+    font-size: 1em;
+    border-bottom: 1px solid #eee;
 
-      }
+    > span {
+
     }
-
-
   }
 
+
+}
+
+
+fieldset.tks-star-rating {
+  legend {
+    margin-bottom: 0;
+  }
+
+  .tk-starrating {
+    margin-bottom: 0;
+  }
+
+  .form-row {
+    margin-top: 0;
+  }
+}
 

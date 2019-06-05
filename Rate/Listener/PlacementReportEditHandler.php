@@ -30,8 +30,7 @@ class PlacementReportEditHandler implements Subscriber
 
     /**
      * @param \Tk\Event\FormEvent $event
-     * @throws \Tk\Db\Exception
-     * @throws \Tk\Exception
+     * @throws \Exception
      */
     public function onFormPreInit(\Tk\Event\FormEvent $event)
     {
@@ -58,12 +57,15 @@ class PlacementReportEditHandler implements Subscriber
         if ($this->form) {
             $reportLabel = \App\Db\Phrase::findValue('report', $this->controller->getProfile()->getId());
             $companyStr = \App\Db\Phrase::findValue('company', $this->controller->getProfile()->getId());
-            $this->form->addField(new \Tk\Form\Field\Html($companyStr . ' Rating', 'Please rate your experience with this ' . strtolower($companyStr)))
-                ->setFieldset($companyStr . ' ' . $reportLabel);
+            $this->form->appendField(new \Tk\Form\Field\Html($companyStr . '-rRating', 'Please rate your experience with this ' . strtolower($companyStr)))
+                ->removeCss('form-control form-control-static form-control-plaintext')
+                ->addCss('text-italic')
+                ->setLabel('')
+                ->setFieldset($companyStr . ' ' . $reportLabel, 'tks-star-rating');
             foreach ($this->questionList as $question) {
                 $name = 'sr-' . $question->id;
-                $this->form->addField(new \Rate\Form\Field\StarRating($name))->setFieldset($companyStr . ' ' . $reportLabel)->
-                    setLabel($question->text)->setNotes($question->help);
+                $this->form->appendField(new \Rate\Form\Field\StarRating($name))->setFieldset($companyStr . ' ' . $reportLabel)
+                    ->setLabel($question->text)->setNotes($question->help);
             }
         }
     }

@@ -172,9 +172,9 @@ class StarRating extends \Tk\Form\Field\Input
         $template->insertText('question', $this->getLabel());
         $this->setLabel('');
 
-
         $template->appendCssUrl(\Tk\Uri::create('/vendor/kartik-v/bootstrap-star-rating/css/star-rating.min.css'));
         $template->appendJsUrl(\Tk\Uri::create('/vendor/kartik-v/bootstrap-star-rating/js/star-rating.min.js'));
+        $template->appendCssUrl(\Tk\Uri::create(\Rate\Plugin::getInstance()->getPluginPath().'/assets/field.less'));
 
         $this->setType('number');
         // Options: http://plugins.krajee.com/star-rating#usage
@@ -196,6 +196,9 @@ class StarRating extends \Tk\Form\Field\Input
 jQuery(function($) {
   
   $('.tk-star-rating input').rating();
+  // $('.tk-star-rating').closest('.tk-starrating').css('marginBottom', '0');
+  // $('.tk-star-rating').closest('.form-row').css('marginTop', '0');
+  // $('.tk-star-rating').closest('fieldset').find('legend').css('marginBottom', '0');
   
 });
 JS;
