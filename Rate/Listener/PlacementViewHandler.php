@@ -33,10 +33,10 @@ class PlacementViewHandler implements Subscriber
             $template = $view->getTemplate();
             $report = $view->getReport();
             $placement = $report->getPlacement();
-            if (!\Rate\Plugin::getInstance()->isProfileActive($placement->getSubject()->profileId)) {
+            if (!\Rate\Plugin::getInstance()->isProfileActive($placement->getSubject()->getProfileId())) {
                 return;
             }
-            $ratingStr = \App\Db\Phrase::findValue('star-rating', $placement->getSubject()->profileId);
+            $ratingStr = \App\Db\Phrase::findValue('star-rating', $placement->getSubject()->getProfileId());
 
             $template->appendCssUrl(\Tk\Uri::create(Plugin::getInstance()->getPluginPath().'/assets/rating.less'));
 

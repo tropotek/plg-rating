@@ -69,7 +69,7 @@ class StatusMailHandler implements Subscriber
     public function onCommentReport(\App\Event\PlacementReportEvent $event)
     {
         $report = $event->getPlacementReport();
-        if (!$report->getPlacement() || !\Rate\Plugin::getInstance()->isProfileActive($report->getPlacement()->getSubject()->profileId)) return;
+        if (!$report->getPlacement() || !\Rate\Plugin::getInstance()->isProfileActive($report->getPlacement()->getSubject()->getProfileId())) return;
 
         $val = \Rate\Db\Value::getCompanyRating($report->getPlacement()->companyId, $report->placementId);
         if ($val !== null) {
