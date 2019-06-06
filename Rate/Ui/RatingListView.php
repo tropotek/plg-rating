@@ -52,7 +52,7 @@ class RatingListView extends \Dom\Renderer\Renderer
             $row->insertText('text', $question->text);
             $row->insertHtml('rating', \Rate\Ui\Stars::create($val->value, true));
             $row->appendRepeat();
-            $template->setChoice('table');
+            $template->setVisible('table');
         }
 
         return $template;
