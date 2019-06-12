@@ -68,7 +68,6 @@ class Plugin extends \App\Plugin\Iface
         $db = $this->getConfig()->getDb();
 
 
-
     }
 
     /**
