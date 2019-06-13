@@ -173,12 +173,10 @@ class ValueMap extends \App\Db\Mapper
     {
         $avg = 0;
         try {
-            list($from, $where) = $this->processFilter($filter);
-            if (!$where) $where = '1';
-
+            $filter = $this->makeQuery(\Tk\Db\Filter::create($filter));
             $sql = sprintf('SELECT AVG(a.value) as avg
 FROM %s
-WHERE %s', $from, $where);
+WHERE %s', $filter->getFrom(), $filter->getWhere('1'));
             $stm = $this->getDb()->prepare($sql);
                 $stm->execute();
             $r = $stm->fetch();
