@@ -42,7 +42,7 @@ class CompanyEditHandler implements Subscriber
                 $totalHtml = sprintf('<div class="rate-star-rating pull-right">%s</div>', \Rate\Ui\Stars::create($value, true));
 
                 // Individual rating question list
-                $questionList = \Rate\Db\QuestionMap::create()->findFiltered(array('profileId' => $company->profileId));
+                $questionList = \Rate\Db\QuestionMap::create()->findFiltered(array('profileId' => $company->courseId));
                 $html = '';
                 foreach ($questionList as $question) {
                     $value = (float)\Rate\Db\ValueMap::create()->findAverage(array('companyId' => $company->getId(), 'questionId' => $question->getId()));
@@ -64,7 +64,7 @@ class CompanyEditHandler implements Subscriber
   </div>
 HTML;
 
-                    $html = sprintf($tpl, $totalHtml, \App\Db\Phrase::findValue('star-rating', $company->profileId), $html);
+                    $html = sprintf($tpl, $totalHtml, \App\Db\Phrase::findValue('star-rating', $company->courseId), $html);
                     $template->appendHtml('edit', $html);
                 }
 

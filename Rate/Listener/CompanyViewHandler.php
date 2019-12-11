@@ -76,7 +76,7 @@ class CompanyViewHandler implements Subscriber
         $company = $controller->getCompany();
 
         // Individual rating question list
-        $questionList = \Rate\Db\QuestionMap::create()->findFiltered(array('profileId' => $company->profileId));
+        $questionList = \Rate\Db\QuestionMap::create()->findFiltered(array('profileId' => $company->courseId));
         $html = '';
         foreach ($questionList as $question) {
             $value = (float)\Rate\Db\ValueMap::create()->findAverage(array('companyId' => $company->getId(), 'questionId' => $question->getId()));
@@ -92,7 +92,7 @@ class CompanyViewHandler implements Subscriber
   </ol>
 </section>
 HTML;
-            $html = sprintf($tpl, \App\Db\Phrase::findValue('star-rating', $company->profileId), $html);
+            $html = sprintf($tpl, \App\Db\Phrase::findValue('star-rating', $company->courseId), $html);
             $template->appendHtml('right-col', $html);
         }
     }
@@ -113,7 +113,7 @@ HTML;
 //            \App\Db\Phrase::findValue('company-view-star-rating', $company->profileId), \Rate\Ui\Stars::create($value, true));
 
         $html = sprintf('<div class="rate-star-rating pull-right text-center" title="%s">%s</div>',
-            htmlentities(\App\Db\Phrase::findValue('company-view-star-rating', $company->profileId)), \Rate\Ui\Stars::create($value, true));
+            htmlentities(\App\Db\Phrase::findValue('company-view-star-rating', $company->courseId)), \Rate\Ui\Stars::create($value, true));
 
         $template->appendHtml('top-col-right', $html);
     }
