@@ -24,12 +24,12 @@ class ProfileEditHandler implements Subscriber
         /** @var \Tk\Controller\Iface $controller */
         $controller = $event->get('controller');
         if ($controller instanceof \App\Controller\Profile\Edit) {
-            if (!\Rate\Plugin::getInstance()->isZonePluginEnabled(\Rate\Plugin::ZONE_SUBJECT_PROFILE, $controller->getProfile()->getId())) return;
-            if ($controller->getUser()->isStaff() && $controller->getProfile()) {
+            if (!\Rate\Plugin::getInstance()->isZonePluginEnabled(\Rate\Plugin::ZONE_SUBJECT_PROFILE, $controller->getCourse()->getId())) return;
+            if ($controller->getUser()->isStaff() && $controller->getCourse()) {
                 /** @var \Tk\Ui\Admin\ActionPanel $actionPanel */
                 $actionPanel = $controller->getActionPanel();
                 $actionPanel->add(\Tk\Ui\Button::create('Rating Questions',
-                    \App\Uri::createHomeUrl('/ratingQuestionManager.html')->set('profileId', $controller->getProfile()->getId()), 'fa fa-star'));
+                    \App\Uri::createHomeUrl('/ratingQuestionManager.html')->set('profileId', $controller->getCourse()->getId()), 'fa fa-star'));
             }
         }
     }

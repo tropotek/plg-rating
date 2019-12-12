@@ -37,11 +37,11 @@ class PlacementReportEditHandler implements Subscriber
         /** @var \App\Controller\Placement\ReportEdit $controller */
         $controller = $event->getForm()->get('controller');
         if ($controller instanceof \App\Controller\Placement\ReportEdit) {
-            if (!\Rate\Plugin::getInstance()->isProfileActive($controller->getProfile()->getId())) return;
+            if (!\Rate\Plugin::getInstance()->isProfileActive($controller->getCourse()->getId())) return;
             if ($controller->getSubject() && $controller->getPlacement()) {
                 $this->controller = $controller;
                 $this->form = $controller->getForm();
-                $this->questionList = \Rate\Db\QuestionMap::create()->findFiltered(array('profileId' => $this->controller->getProfile()->getId()));
+                $this->questionList = \Rate\Db\QuestionMap::create()->findFiltered(array('profileId' => $this->controller->getCourse()->getId()));
             }
         }
     }
@@ -55,8 +55,8 @@ class PlacementReportEditHandler implements Subscriber
     public function onFormInit(\Tk\Event\FormEvent $event)
     {
         if ($this->form) {
-            $reportLabel = \App\Db\Phrase::findValue('report', $this->controller->getProfile()->getId());
-            $companyStr = \App\Db\Phrase::findValue('company', $this->controller->getProfile()->getId());
+            $reportLabel = \App\Db\Phrase::findValue('report', $this->controller->getCourse()->getId());
+            $companyStr = \App\Db\Phrase::findValue('company', $this->controller->getCourse()->getId());
             $this->form->appendField(new \Tk\Form\Field\Html($companyStr . '-rRating', 'Please rate your experience with this ' . strtolower($companyStr)))
                 ->removeCss('form-control form-control-static form-control-plaintext')
                 ->addCss('text-italic')
