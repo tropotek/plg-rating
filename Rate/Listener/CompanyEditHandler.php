@@ -29,7 +29,7 @@ class CompanyEditHandler implements Subscriber
         /** @var \Tk\Controller\Iface $controller */
         $this->controller = $event->get('controller');
         if ($this->controller instanceof \App\Controller\Company\Edit) {
-            if (!\Rate\Plugin::getInstance()->isProfileActive($this->controller->getCourse()->getId())) return;
+            if (!\Rate\Plugin::getInstance()->isCourseActive($this->controller->getCourse()->getId())) return;
             if ($this->controller->getUser()->isStaff()) {
                 $template = $this->controller->getTemplate();
                 $company = $this->controller->getCompany();
@@ -42,7 +42,7 @@ class CompanyEditHandler implements Subscriber
                 $totalHtml = sprintf('<div class="rate-star-rating pull-right">%s</div>', \Rate\Ui\Stars::create($value, true));
 
                 // Individual rating question list
-                $questionList = \Rate\Db\QuestionMap::create()->findFiltered(array('profileId' => $company->courseId));
+                $questionList = \Rate\Db\QuestionMap::create()->findFiltered(array('courseId' => $company->courseId));
                 $html = '';
                 foreach ($questionList as $question) {
                     $value = (float)\Rate\Db\ValueMap::create()->findAverage(array('companyId' => $company->getId(), 'questionId' => $question->getId()));

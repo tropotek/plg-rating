@@ -25,7 +25,7 @@ class QuestionMap extends \App\Db\Mapper
             $this->setTable('rating_question');
             $this->dbMap = new \Tk\DataMap\DataMap();
             $this->dbMap->addPropertyMap(new Db\Integer('id'), 'key');
-            $this->dbMap->addPropertyMap(new Db\Integer('profileId', 'profile_id'));
+            $this->dbMap->addPropertyMap(new Db\Integer('courseId', 'course_id'));
             $this->dbMap->addPropertyMap(new Db\Text('text'));
             $this->dbMap->addPropertyMap(new Db\Boolean('total'));
             $this->dbMap->addPropertyMap(new Db\Text('help'));
@@ -44,7 +44,7 @@ class QuestionMap extends \App\Db\Mapper
         if (!$this->formMap) {
             $this->formMap = new \Tk\DataMap\DataMap();
             $this->formMap->addPropertyMap(new Form\Integer('id'), 'key');
-            $this->formMap->addPropertyMap(new Form\Integer('profileId'));
+            $this->formMap->addPropertyMap(new Form\Integer('courseId'));
             $this->formMap->addPropertyMap(new Form\Text('text'));
             $this->formMap->addPropertyMap(new Form\Boolean('total'));
             $this->formMap->addPropertyMap(new Form\Text('help'));
@@ -83,8 +83,13 @@ class QuestionMap extends \App\Db\Mapper
             if ($w) $filter->appendWhere('(%s) AND ', substr($w, 0, -3));
         }
 
-        if (!empty($filter['profileId'])) {
-            $filter->appendWhere('a.profile_id = %s AND ', (int)$filter['profileId']);
+        if (!empty($filter['id'])) {
+            $w = $this->makeMultiQuery($filter['id'], 'a.id');
+            if ($w) $filter->appendWhere('(%s) AND ', $w);
+        }
+
+        if (!empty($filter['courseId'])) {
+            $filter->appendWhere('a.course_id = %s AND ', (int)$filter['courseId']);
         }
 
         if (!empty($filter['name'])) {

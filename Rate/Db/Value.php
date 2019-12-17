@@ -2,6 +2,9 @@
 namespace Rate\Db;
 
 
+use App\Db\Traits\PlacementTrait;
+use Bs\Db\Traits\TimestampTrait;
+
 /**
  * @author Michael Mifsud <info@tropotek.com>
  * @see http://www.tropotek.com/
@@ -9,7 +12,11 @@ namespace Rate\Db;
  */
 class Value extends \Tk\Db\Map\Model
 {
-    
+    use TimestampTrait;
+    use PlacementTrait;
+
+
+
     /**
      * @var int
      */
@@ -40,17 +47,10 @@ class Value extends \Tk\Db\Map\Model
      */
     public $created = null;
 
-
     /**
      * @var Question
      */
-    private $question = null;
-
-    /**
-     * @var \App\Db\Placement
-     */
-    private $placement = null;
-
+    private $_question = null;
 
 
     /**
@@ -58,8 +58,7 @@ class Value extends \Tk\Db\Map\Model
      */
     public function __construct()
     {
-        $this->modified = \Tk\Date::create();
-        $this->created = \Tk\Date::create();
+        $this->_TimestampTrait();
     }
 
     /**
@@ -71,18 +70,10 @@ class Value extends \Tk\Db\Map\Model
     public static function create($placement, $question, $value)
     {
         $obj = new static();
-        $obj->placementId = $placement->id;
-        $obj->questionId = $question->id;
+        $obj->placementId = $placement->getId();
+        $obj->questionId = $question->getId();
         $obj->value = (int)$value;
         return $obj;
-    }
-
-    /**
-     *
-     */
-    public function save()
-    {
-        parent::save();
     }
 
     /**
@@ -91,24 +82,11 @@ class Value extends \Tk\Db\Map\Model
      */
     public function getQuestion()
     {
-        if (!$this->question) {
-            $this->question = QuestionMap::create()->find($this->questionId);
+        if (!$this->_question) {
+            $this->_question = QuestionMap::create()->find($this->questionId);
         }
-        return $this->question;
+        return $this->_question;
     }
-
-    /**
-     * @return \App\Db\Placement|null|\Tk\Db\Map\Model|\Tk\Db\ModelInterface
-     * @throws \Tk\Db\Exception
-     */
-    public function getPlacement()
-    {
-        if (!$this->placement) {
-            $this->placement = \App\Db\PlacementMap::create()->find($this->placementId);
-        }
-        return $this->placement;
-    }
-
 
     /**
      * If a $placementId is supplied then total rating will be for that placement only
@@ -132,11 +110,46 @@ class Value extends \Tk\Db\Map\Model
         $cnt = 0;
         $tot = 0;
         foreach($list as $i => $r) {
-            //if (!$r->getQuestion()->total) continue;
             $cnt++;
             $tot += (int)$r->value;
         }
         return round(($tot/$cnt), 2);
+    }
+
+    /**
+     * @return int
+     */
+    public function getQuestionId(): int
+    {
+        return $this->questionId;
+    }
+
+    /**
+     * @param int $questionId
+     * @return Value
+     */
+    public function setQuestionId(int $questionId): Value
+    {
+        $this->questionId = $questionId;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getValue(): string
+    {
+        return $this->value;
+    }
+
+    /**
+     * @param string $value
+     * @return Value
+     */
+    public function setValue(string $value): Value
+    {
+        $this->value = $value;
+        return $this;
     }
 
     /**
@@ -145,12 +158,10 @@ class Value extends \Tk\Db\Map\Model
     public function validate()
     {
         $errors = array();
+        $errors = $this->validatePlacementId($errors);
 
         if ((int)$this->questionId <= 0) {
             $errors['typeId'] = 'Invalid Type ID';
-        }
-        if ((int)$this->placementId <= 0) {
-            $errors['placementId'] = 'Invalid Placement ID';
         }
 
         return $errors;

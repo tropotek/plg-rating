@@ -9,27 +9,26 @@ use Rate\Plugin;
  * @see http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
  */
-class ProfileEditHandler implements Subscriber
+class CourseEditHandler implements Subscriber
 {
 
     /**
      * Check the user has access to this controller
      *
      * @param \Tk\Event\Event $event
-     * @throws \Tk\Db\Exception
-     * @throws \Tk\Exception
+     * @throws \Exception
      */
     public function onControllerInit(\Tk\Event\Event $event)
     {
         /** @var \Tk\Controller\Iface $controller */
         $controller = $event->get('controller');
-        if ($controller instanceof \App\Controller\Profile\Edit) {
-            if (!\Rate\Plugin::getInstance()->isZonePluginEnabled(\Rate\Plugin::ZONE_SUBJECT_PROFILE, $controller->getCourse()->getId())) return;
+        if ($controller instanceof \App\Controller\Course\Edit) {
+            if (!Plugin::getInstance()->isZonePluginEnabled(\Rate\Plugin::ZONE_COURSE, $controller->getCourse()->getId())) return;
             if ($controller->getUser()->isStaff() && $controller->getCourse()) {
                 /** @var \Tk\Ui\Admin\ActionPanel $actionPanel */
                 $actionPanel = $controller->getActionPanel();
-                $actionPanel->add(\Tk\Ui\Button::create('Rating Questions',
-                    \App\Uri::createHomeUrl('/ratingQuestionManager.html')->set('profileId', $controller->getCourse()->getId()), 'fa fa-star'));
+                $actionPanel->append(\Tk\Ui\Link::createBtn('Rating Questions',
+                    \Uni\Uri::createHomeUrl('/ratingQuestionManager.html')->set('courseId', $controller->getCourse()->getId()), 'fa fa-star'));
             }
         }
     }

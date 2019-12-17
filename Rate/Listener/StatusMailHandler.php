@@ -5,7 +5,6 @@ use Tk\Event\Subscriber;
 
 
 /**
- *
  * @author Michael Mifsud <info@tropotek.com>
  * @see http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
@@ -20,14 +19,14 @@ class StatusMailHandler implements Subscriber
     public function onSendStatusMessage(\App\Event\StatusEvent $event)
     {
         // do not send messages
-        if (!$event->getStatus()->notify || !$event->getStatus()->getProfile()->notifications) {
+        if (!$event->getStatus()->isNotify() || !$event->getStatus()->getCourse()->getProfile()->isNotifications()) {
             \Tk\Log::warning('onSendStatusMessage: Status Notification Disabled');
             return;
         }
 
         /** @var \Tk\Mail\CurlyMessage $message */
         foreach ($event->getMessageList() as $message) {
-            if (!\Rate\Plugin::getInstance()->isProfileActive($message->get('profile::id'))) return;
+            if (!\Rate\Plugin::getInstance()->isCourseActive($message->get('course::id'))) return;
 
             /** @var \App\Db\Company $company */
             $company = \App\Db\CompanyMap::create()->find($message->get('company::id'));
@@ -37,9 +36,9 @@ class StatusMailHandler implements Subscriber
             $message->set('company::starRating', $value);
 
             $questionRatings = '';
-            $questionList = \Rate\Db\QuestionMap::create()->findFiltered(array('profileId' => $message->get('profile::id')));
+            $questionList = \Rate\Db\QuestionMap::create()->findFiltered(array('courseId' => $message->get('course::id')));
             foreach ($questionList as $q) {
-                $ratingsList = \Rate\Db\ValueMap::create()->findFiltered(array('companyId' => $company->id, 'questionId' => $q->id));
+                $ratingsList = \Rate\Db\ValueMap::create()->findFiltered(array('companyId' => $company->id, 'questionId' => $q->getId()));
                 $cnt = $ratingsList->count();
                 $tot = 0;
                 $rating = '';
@@ -59,7 +58,6 @@ class StatusMailHandler implements Subscriber
             }
             $message->set('company::questionRatings', $questionRatings);
         }
-
     }
 
     /**
@@ -69,9 +67,8 @@ class StatusMailHandler implements Subscriber
     public function onCommentReport(\App\Event\PlacementReportEvent $event)
     {
         $report = $event->getPlacementReport();
-        if (!$report->getPlacement() || !\Rate\Plugin::getInstance()->isProfileActive($report->getPlacement()->getSubject()->getProfileId())) return;
-
-        $val = \Rate\Db\Value::getCompanyRating($report->getPlacement()->companyId, $report->placementId);
+        if (!$report->getPlacement() || !\Rate\Plugin::getInstance()->isCourseActive($report->getPlacement()->getSubject()->getCourseId())) return;
+        $val = \Rate\Db\Value::getCompanyRating($report->getPlacement()->getCompanyId(), $report->getPlacementId());
         if ($val !== null) {
             $html = sprintf('<p><small>Rating: %.2f / 5.00</small></p>', $val);
             $event->set('postHtml', $html);

@@ -2,7 +2,6 @@
 namespace Rate\Controller\Question;
 
 use Dom\Template;
-use Tk\Form\Field;
 use Tk\Request;
 
 
@@ -20,9 +19,9 @@ class Manager extends \App\Controller\AdminManagerIface
     private $subject = null;
 
     /**
-     * @var \App\Db\Profile
+     * @var \App\Db\Course
      */
-    private $profile = null;
+    private $course = null;
 
 
     /**
@@ -39,18 +38,17 @@ class Manager extends \App\Controller\AdminManagerIface
      */
     public function doDefault(Request $request)
     {
-        $this->profile = \App\Db\ProfileMap::create()->find($request->get('profileId'));
+        $this->course = $this->getConfig()->getCourseMapper()->find($request->get('courseId'));
         $this->subject = $this->getConfig()->getSubject();
-        if (!$this->profile && $this->subject)
-            $this->profile = $this->subject->getProfile();
-
+        if (!$this->course && $this->subject)
+            $this->course = $this->subject->getCourse();
 
         $this->setTable(\Rate\Table\Question::create());
-        $this->getTable()->setEditUrl(\App\Uri::createHomeUrl('/ratingQuestionEdit.html'));
+        $this->getTable()->setEditUrl(\Uni\Uri::createHomeUrl('/ratingQuestionEdit.html'));
         $this->getTable()->init();
 
         $filter = array(
-            'profileId' => $this->profile->getId()
+            'configId' => $this->course->getId()
         );
         $this->getTable()->setList($this->getTable()->findList($filter));
 
@@ -62,7 +60,7 @@ class Manager extends \App\Controller\AdminManagerIface
     public function initActionPanel()
     {
         $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('New Question',
-            $this->getTable()->getEditUrl()->set('profileId', $this->profile->getId()), 'fa fa-star fa-add-action'));
+            $this->getTable()->getEditUrl()->set('courseId', $this->course->getId()), 'fa fa-star fa-add-action'));
     }
 
     /**

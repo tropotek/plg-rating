@@ -2,6 +2,10 @@
 namespace Rate\Db;
 
 
+use Bs\Db\Traits\OrderByTrait;
+use Bs\Db\Traits\TimestampTrait;
+use Uni\Db\Traits\CourseTrait;
+
 /**
  * @author Michael Mifsud <info@tropotek.com>
  * @see http://www.tropotek.com/
@@ -9,6 +13,9 @@ namespace Rate\Db;
  */
 class Question extends \Tk\Db\Map\Model
 {
+    use CourseTrait;
+    use TimestampTrait;
+    use OrderByTrait;
     
     /**
      * @var int
@@ -18,7 +25,7 @@ class Question extends \Tk\Db\Map\Model
     /**
      * @var int
      */
-    public $profileId = 0;
+    public $courseId = 0;
 
     /**
      * @var string
@@ -52,39 +59,65 @@ class Question extends \Tk\Db\Map\Model
 
 
     /**
-     * @var \App\Db\Profile
-     */
-    private $profile = null;
-
-
-
-    /**
      * constructor.
      */
     public function __construct()
     {
-        $this->modified = \Tk\Date::create();
-        $this->created = \Tk\Date::create();
+        $this->_TimestampTrait();
     }
 
     /**
-     *
+     * @return string
      */
-    public function save()
+    public function getText(): string
     {
-        parent::save();
+        return $this->text;
     }
 
     /**
-     * @return \App\Db\Profile|null|\Tk\Db\Map\Model|\Tk\Db\ModelInterface
-     * @throws \Tk\Db\Exception
+     * @param string $text
+     * @return Question
      */
-    public function getProfile()
+    public function setText(string $text): Question
     {
-        if (!$this->profile) {
-            $this->profile = \App\Db\ProfileMap::create()->find($this->profileId);
-        }
-        return $this->profile;
+        $this->text = $text;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isTotal(): bool
+    {
+        return $this->total;
+    }
+
+    /**
+     * @param bool $total
+     * @return Question
+     */
+    public function setTotal(bool $total): Question
+    {
+        $this->total = $total;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getHelp(): string
+    {
+        return $this->help;
+    }
+
+    /**
+     * @param string $help
+     * @return Question
+     */
+    public function setHelp(string $help): Question
+    {
+        $this->help = $help;
+        return $this;
     }
 
     /**
@@ -93,11 +126,9 @@ class Question extends \Tk\Db\Map\Model
     public function validate()
     {
         $errors = array();
+        $errors = $this->validateCourseId($errors);
 
-        if ((int)$this->profileId <= 0) {
-            $errors['profileId'] = 'Invalid Profile ID';
-        }
-        if (!$this->text) {
+        if (!$this->getText()) {
             $errors['text'] = 'Please enter a valid text';
         }
 

@@ -116,6 +116,11 @@ class ValueMap extends \App\Db\Mapper
             if ($w) $filter->appendWhere('(%s) AND ', substr($w, 0, -3));
         }
 
+        if (!empty($filter['id'])) {
+            $w = $this->makeMultiQuery($filter['id'], 'a.id');
+            if ($w) $filter->appendWhere('(%s) AND ', $w);
+        }
+
         if (!empty($filter['questionId'])) {
             $filter->appendWhere('a.question_id = %s AND ', (int)$filter['questionId']);
         }
@@ -124,10 +129,10 @@ class ValueMap extends \App\Db\Mapper
             $filter->appendWhere('a.placement_id = %s AND ', (int)$filter['placementId']);
         }
 
-        if (!empty($filter['profileId'])) {
+        if (!empty($filter['courseId'])) {
             $filter->appendFrom(', %s b', $this->quoteTable('rating_question'));
             $filter->appendWhere('a.question_id = b.id AND ');
-            $filter->appendWhere('b.profile_id = %s AND ', (int)$filter['profileId']);
+            $filter->appendWhere('b.course_id = %s AND ', (int)$filter['courseId']);
         }
 
         if (!empty($filter['subjectId']) || !empty($filter['companyId'])) {

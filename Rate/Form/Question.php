@@ -30,7 +30,7 @@ class Question extends \App\FormIface
         $this->appendField(new Field\Input('text'));
         $this->appendField(new Field\Input('help'));
         $this->appendField(new Field\Checkbox('total'))->setCheckboxLabel('Add this questions values to the ' .
-            \App\Db\Phrase::findValue('company', $this->getQuestion()->profileId) . ' total rating calculations.');
+            \App\Db\Phrase::findValue('company', $this->getQuestion()->courseId) . ' total rating calculations.');
 
         
         $this->appendField(new Event\Submit('update', array($this, 'doSubmit')));

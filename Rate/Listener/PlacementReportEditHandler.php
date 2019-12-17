@@ -37,11 +37,11 @@ class PlacementReportEditHandler implements Subscriber
         /** @var \App\Controller\Placement\ReportEdit $controller */
         $controller = $event->getForm()->get('controller');
         if ($controller instanceof \App\Controller\Placement\ReportEdit) {
-            if (!\Rate\Plugin::getInstance()->isProfileActive($controller->getCourse()->getId())) return;
+            if (!\Rate\Plugin::getInstance()->isCourseActive($controller->getCourse()->getId())) return;
             if ($controller->getSubject() && $controller->getPlacement()) {
                 $this->controller = $controller;
                 $this->form = $controller->getForm();
-                $this->questionList = \Rate\Db\QuestionMap::create()->findFiltered(array('profileId' => $this->controller->getCourse()->getId()));
+                $this->questionList = \Rate\Db\QuestionMap::create()->findFiltered(array('courseId' => $this->controller->getCourse()->getId()));
             }
         }
     }

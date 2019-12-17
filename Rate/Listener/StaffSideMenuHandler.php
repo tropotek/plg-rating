@@ -23,13 +23,13 @@ class StaffSideMenuHandler implements Subscriber
         /** @var \App\Controller\Iface $controller */
         $controller = $event->get('controller');
         if ($controller->getSubject() && $controller->getUser()->isStaff()) {
-            if (!\Rate\Plugin::getInstance()->isProfileActive($controller->getCourse()->getId())) return;
+            if (!\Rate\Plugin::getInstance()->isCourseActive($controller->getCourse()->getId())) return;
             /** @var \App\Page $page */
             $page = $controller->getPage();
             /** @var \App\Ui\Sidebar\StaffMenu $sideBar */
             $sideBar = $page->getSidebar();
             if ($sideBar instanceof \App\Ui\Sidebar\StaffMenu) {
-                $sideBar->addReportUrl(\Tk\Ui\Link::create('Animals', \App\Uri::createSubjectUrl('/animalTypeReport.html'), 'fa fa-paw'));
+                $sideBar->addReportUrl(\Tk\Ui\Link::create('Animals', \Uni\Uri::createSubjectUrl('/animalTypeReport.html'), 'fa fa-paw'));
             }
         }
     }

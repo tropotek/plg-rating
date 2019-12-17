@@ -34,7 +34,7 @@ class Edit extends \App\Controller\AdminEditIface
     public function doDefault(Request $request)
     {
         $this->question = new \Rate\Db\Question();
-        $this->question->profileId = (int)$request->get('profileId');
+        $this->question->setCourseId((int)$request->get('courseId'));
         if ($request->get('questionId')) {
             $this->question = \Rate\Db\QuestionMap::create()->find($request->get('questionId'));
         }

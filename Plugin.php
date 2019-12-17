@@ -32,7 +32,7 @@ class Plugin extends \App\Plugin\Iface
 
         // Register the plugin for the different client areas if they are to be enabled/disabled/configured by those roles.
         //$this->getPluginFactory()->registerZonePlugin($this, self::ZONE_INSTITUTION);
-        $this->getPluginFactory()->registerZonePlugin($this, self::ZONE_SUBJECT_PROFILE);
+        $this->getPluginFactory()->registerZonePlugin($this, self::ZONE_COURSE);
         //$this->getPluginFactory()->registerZonePlugin($this, self::ZONE_SUBJECT);
 
         \App\Config::getInstance()->getEventDispatcher()->addSubscriber(new \Rate\Listener\SetupHandler());
@@ -66,19 +66,17 @@ class Plugin extends \App\Plugin\Iface
     {
         // TODO: Implement doDeactivate() method.
         $db = $this->getConfig()->getDb();
-
-
     }
 
     /**
-     * @param $profileId
+     * @param $courseId
      * @return bool
      * @throws \Exception
      */
-    function isProfileActive($profileId)
+    function isCourseActive($courseId)
     {
-        $b = $this->isZonePluginEnabled(\Rate\Plugin::ZONE_SUBJECT_PROFILE, $profileId);
-        if (!\Rate\Db\QuestionMap::create()->findFiltered(array('profileId' => $profileId))->count()) {
+        $b = $this->isZonePluginEnabled(\Rate\Plugin::ZONE_COURSE, $courseId);
+        if (!\Rate\Db\QuestionMap::create()->findFiltered(array('courseId' => $courseId))->count()) {
             $b = false;
         }
         return $b;

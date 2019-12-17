@@ -29,7 +29,7 @@ class CompanyViewHandler implements Subscriber
         /** @var \Tk\Controller\Iface $controller */
         $this->controller = $event->get('controller');
         if ($this->controller instanceof \App\Controller\Company\View || $this->controller instanceof \App\Controller\Company\CommentReport) {
-            if (!\Rate\Plugin::getInstance()->isProfileActive($this->controller->getCourse()->getId())) return;
+            if (!\Rate\Plugin::getInstance()->isCourseActive($this->controller->getCourse()->getId())) return;
             if ($this->controller->getUser()->isStaff() || $this->controller->getUser()->isStudent()) {
                 $template = $this->controller->getTemplate();
                 $template->appendCssUrl(\Tk\Uri::create(Plugin::getInstance()->getPluginPath().'/assets/rating.less'));
@@ -59,7 +59,7 @@ class CompanyViewHandler implements Subscriber
                     $value = (float)\Rate\Db\ValueMap::create()->findAverage(array('companyId' => $obj->getPlacement()->companyId, 'placementId' => $obj->placementId));
                     if (!$value) return '';
                     return sprintf('<div class="rate-star-rating"><em>%s</em><br/>%s</div>',
-                        \App\Db\Phrase::findValue('star-rating', $obj->getPlacement()->getSubject()->getProfileId()),
+                        \App\Db\Phrase::findValue('star-rating', $obj->getPlacement()->getSubject()->getCourseId()),
                         \Rate\Ui\Stars::create($value, true));
                 }
             );
@@ -76,7 +76,7 @@ class CompanyViewHandler implements Subscriber
         $company = $controller->getCompany();
 
         // Individual rating question list
-        $questionList = \Rate\Db\QuestionMap::create()->findFiltered(array('profileId' => $company->courseId));
+        $questionList = \Rate\Db\QuestionMap::create()->findFiltered(array('courseId' => $company->courseId));
         $html = '';
         foreach ($questionList as $question) {
             $value = (float)\Rate\Db\ValueMap::create()->findAverage(array('companyId' => $company->getId(), 'questionId' => $question->getId()));
