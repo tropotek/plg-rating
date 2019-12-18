@@ -48,7 +48,7 @@ class Manager extends \App\Controller\AdminManagerIface
         $this->getTable()->init();
 
         $filter = array(
-            'configId' => $this->course->getId()
+            'courseId' => $this->course->getId()
         );
         $this->getTable()->setList($this->getTable()->findList($filter));
 
