@@ -19,7 +19,7 @@ class StatusMailHandler implements Subscriber
     public function onSendStatusMessage(\App\Event\StatusEvent $event)
     {
         // do not send messages
-        if (!$event->getStatus()->isNotify() || !$event->getStatus()->getCourse()->getProfile()->isNotifications()) {
+        if (!$event->getStatus()->isNotify() || !$event->getStatus()->getCourse()->getCourseProfile()->isNotifications()) {
             \Tk\Log::warning('onSendStatusMessage: Status Notification Disabled');
             return;
         }
