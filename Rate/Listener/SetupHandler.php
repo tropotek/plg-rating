@@ -1,9 +1,9 @@
 <?php
 namespace Rate\Listener;
 
-use Tk\Event\Subscriber;
-use Symfony\Component\HttpKernel\KernelEvents;
 use Rate\Plugin;
+use Symfony\Component\HttpKernel\KernelEvents;
+use Tk\Event\Subscriber;
 
 /**
  * @author Michael Mifsud <info@tropotek.com>

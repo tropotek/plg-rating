@@ -1,8 +1,8 @@
 <?php
 namespace Rate\Listener;
 
-use Tk\Event\Subscriber;
 use Rate\Plugin;
+use Tk\Event\Subscriber;
 
 /**
  * @author Michael Mifsud <info@tropotek.com>
