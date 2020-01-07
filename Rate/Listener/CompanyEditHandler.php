@@ -65,11 +65,8 @@ class CompanyEditHandler implements Subscriber
 HTML;
 
                     $html = sprintf($tpl, $totalHtml, \App\Db\Phrase::findValue('star-rating', $company->courseId), $html);
-                    $template->appendHtml('edit', $html);
+                    $template->prependHtml('edit', $html);
                 }
-
-
-
             }
         }
     }
