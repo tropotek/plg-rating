@@ -13,10 +13,10 @@ class StatusMailHandler implements Subscriber
 {
 
     /**
-     * @param \App\Event\StatusEvent $event
+     * @param \Uni\Event\StatusEvent $event
      * @throws \Exception
      */
-    public function onSendStatusMessage(\App\Event\StatusEvent $event)
+    public function onSendStatusMessage(\Uni\Event\StatusEvent $event)
     {
         // do not send messages
         if (!$event->getStatus()->isNotify() || !$event->getStatus()->getCourse()->getCourseProfile()->isNotifications()) {
@@ -81,7 +81,7 @@ class StatusMailHandler implements Subscriber
     public static function getSubscribedEvents()
     {
         return array(
-            \App\StatusEvents::STATUS_CHANGE => array('onSendStatusMessage', 0),
+            \Uni\StatusEvents::STATUS_CHANGE => array('onSendStatusMessage', 0),
             \App\AppEvents::COMPANY_COMMENT_REPORT => array('onCommentReport', 0)
         );
     }
