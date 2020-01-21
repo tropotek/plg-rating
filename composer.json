@@ -9,9 +9,9 @@
         "star",
         "rating"
     ],
-    "time": "2020-01-21",
+    "time": "2019-04-09",
     "license": "MIT",
-    "version": "3.0.16",
+    "version": "master",
     "access": "admin, course",
     "authors":  [
          {
