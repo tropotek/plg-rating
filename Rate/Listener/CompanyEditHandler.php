@@ -30,7 +30,7 @@ class CompanyEditHandler implements Subscriber
         $this->controller = $event->get('controller');
         if ($this->controller instanceof \App\Controller\Company\Edit) {
             if (!\Rate\Plugin::getInstance()->isCourseActive($this->controller->getCourse()->getId())) return;
-            if ($this->controller->getUser()->isStaff()) {
+            if ($this->controller->getAuthUser()->isStaff()) {
                 $template = $this->controller->getTemplate();
                 $company = $this->controller->getCompany();
                 if (!$company->getId()) return;

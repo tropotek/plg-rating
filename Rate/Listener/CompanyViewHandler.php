@@ -30,7 +30,7 @@ class CompanyViewHandler implements Subscriber
         $this->controller = $event->get('controller');
         if ($this->controller instanceof \App\Controller\Company\View || $this->controller instanceof \App\Controller\Company\CommentReport) {
             if (!\Rate\Plugin::getInstance()->isCourseActive($this->controller->getCourse()->getId())) return;
-            if ($this->controller->getUser()->isStaff() || $this->controller->getUser()->isStudent()) {
+            if ($this->controller->getAuthUser()->isStaff() || $this->controller->getAuthUser()->isStudent()) {
                 $template = $this->controller->getTemplate();
                 $template->appendCssUrl(\Tk\Uri::create(Plugin::getInstance()->getPluginPath().'/assets/rating.less'));
 

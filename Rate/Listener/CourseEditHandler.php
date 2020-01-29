@@ -24,7 +24,7 @@ class CourseEditHandler implements Subscriber
         $controller = $event->get('controller');
         if ($controller instanceof \App\Controller\Course\Edit) {
             if (!Plugin::getInstance()->isZonePluginEnabled(\Rate\Plugin::ZONE_COURSE, $controller->getCourse()->getId())) return;
-            if ($controller->getUser()->isStaff() && $controller->getCourse()) {
+            if ($controller->getAuthUser()->isStaff() && $controller->getCourse()) {
                 /** @var \Tk\Ui\Admin\ActionPanel $actionPanel */
                 $actionPanel = $controller->getActionPanel();
                 $actionPanel->append(\Tk\Ui\Link::createBtn('Rating Questions',
