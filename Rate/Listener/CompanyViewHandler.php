@@ -51,7 +51,7 @@ class CompanyViewHandler implements Subscriber
         $commentTable = $controller->getCommentTable();
 
         $commentTable->prependCell(new \Tk\Table\Cell\Text('rating'), 'title')
-            ->setOnCellHtml(
+            ->addOnCellHtml(
                 function ($cell, $obj, $html) {
                     /** @var \Tk\Table\Cell\Iface $cell */
                     /** @var \App\Db\PlacementReport $obj */
