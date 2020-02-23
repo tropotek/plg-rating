@@ -22,11 +22,6 @@
             "Rate\\": ""
         }
     },
-    "extra":  {
-        "branch-alias":  {
-            "dev-master": "3.0.x-dev"
-        }
-    },
     "require":  {
         "kartik-v/bootstrap-star-rating": "~2.0"
     }
