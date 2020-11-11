@@ -1,6 +1,7 @@
 <?php
 namespace Rate\Listener;
 
+use Tk\ConfigTrait;
 use Tk\Event\Subscriber;
 
 
@@ -11,6 +12,7 @@ use Tk\Event\Subscriber;
  */
 class StatusMailHandler implements Subscriber
 {
+    use ConfigTrait;
 
     /**
      * @param \Bs\Event\StatusEvent $event
@@ -19,8 +21,9 @@ class StatusMailHandler implements Subscriber
     public function onSendStatusMessage(\Bs\Event\StatusEvent $event)
     {
         // do not send messages
-        if (!$event->getStatus()->isNotify() || !$event->getStatus()->getCourse()->getCourseProfile()->isNotifications()) {
-            \Tk\Log::warning('onSendStatusMessage: Status Notification Disabled');
+        $course = $this->getConfig()->getCourseMapper()->find($event->getStatus()->getCourseId());
+        if (!$event->getStatus()->isNotify() || ($course && !$course->getCourseProfile()->isNotifications())) {
+            \Tk\Log::debug('onSendStatusMessage: Status Notification Disabled');
             return;
         }
 
