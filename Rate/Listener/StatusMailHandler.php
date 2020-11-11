@@ -81,7 +81,7 @@ class StatusMailHandler implements Subscriber
     public static function getSubscribedEvents()
     {
         return array(
-            \Uni\StatusEvents::STATUS_CHANGE => array('onSendStatusMessage', 0),
+            \Bs\StatusEvents::STATUS_CHANGE => array('onSendStatusMessage', 0),
             \App\AppEvents::COMPANY_COMMENT_REPORT => array('onCommentReport', 0)
         );
     }
