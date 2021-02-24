@@ -56,7 +56,10 @@ class CompanyViewHandler implements Subscriber
                     /** @var \Tk\Table\Cell\Iface $cell */
                     /** @var \App\Db\PlacementReport $obj */
                     $cell->addCss('pull-right');
-                    $value = (float)\Rate\Db\ValueMap::create()->findAverage(array('companyId' => $obj->getPlacement()->companyId, 'placementId' => $obj->placementId));
+                    $value = '';
+                    if ($obj->getPlacement()) {
+                        $value = (float)\Rate\Db\ValueMap::create()->findAverage(array('companyId' => $obj->getPlacement()->companyId, 'placementId' => $obj->placementId));
+                    }
                     if (!$value) return '';
                     return sprintf('<div class="rate-star-rating"><em>%s</em><br/>%s</div>',
                         \App\Db\Phrase::findValue('star-rating', $obj->getPlacement()->getSubject()->getCourseId()),
