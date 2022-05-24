@@ -23,7 +23,7 @@ class StatusMailHandler implements Subscriber
         // do not send messages
         $course = \Uni\Util\Status::getCourse($event->getStatus());
         if (!$event->getStatus()->isNotify() || ($course && !$course->getCourseProfile()->isNotifications())) {
-            \Tk\Log::debug('Skill::onSendAllStatusMessages: Status Notification Disabled');
+            //\Tk\Log::debug('Skill::onSendAllStatusMessages: Status Notification Disabled');
             return;
         }
         $subject = \Uni\Util\Status::getSubject($event->getStatus());
