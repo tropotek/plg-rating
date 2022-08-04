@@ -1,6 +1,6 @@
 # EMS Company Star Rating Plugin
 
-__Project:__ [uom-plg/plg-rating](http://packagist.org/packages/uom-plg/plg-rating)
+__Project:__ [ttek-plg/plg-rating](http://packagist.org/packages/ttek-plg/plg-rating)
 __Web:__ <http://www.tropotek.com/>  
 __Authors:__ Michael Mifsud <http://www.tropotek.com/>  
   
@@ -14,18 +14,18 @@ EMS Company Star Rating plugin
 
 ## Installation
 
-Available on Packagist ([uom-plg/plg-rating](http://packagist.org/packages/uom-plg/plg-rating))
+Available on Packagist ([ttek-plg/plg-rating](http://packagist.org/packages/ttek-plg/plg-rating))
 and as such installable via [Composer](http://getcomposer.org/).
 
 ```bash
-# composer require uom-plg/plg-rating
+# composer require ttek-plg/plg-rating
 ```
 
 Or add the following to your composer.json file:
 
 ```json
 {
-  "uom-plg/plg-rating": "~3.2"
+  "ttek-plg/plg-rating": "~3.2"
 }
 ```
 
